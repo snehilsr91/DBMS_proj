@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HR Test</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #eef2f5; }
+    .question { margin-bottom: 20px; }
+    button { padding: 10px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>HR Mock Test</h2>
+  <div id="questions"></div>
+  <button onclick="submitTest()">Submit Test</button>
+
+  <script>
+    let questions = [];
+    let answers = {};
+
+    fetch('/start-test?testType=hr')
+      .then(res => res.json())
+      .then(data => {
+        questions = data;
+        const container = document.getElementById('questions');
+        data.forEach((q, i) => {
+          const qDiv = document.createElement('div');
+          qDiv.className = 'question';
+          qDiv.innerHTML = `
+            <p><strong>Q${i + 1}:</strong> ${q.question_text}</p>
+            ${['option_A', 'option_B', 'option_C', 'option_D'].map(opt => `
+              <label><input type="radio" name="q${i}" value="${opt}"> ${q[opt]}</label><br/>
+            `).join('')}
+          `;
+          container.appendChild(qDiv);
+        });
+      });
+
+    function submitTest() {
+      let score = 0;
+      let correctAnswers = 0;
+      let attempted = 0;
+
+      questions.forEach((q, i) => {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selected) {
+          attempted++;
+          if (selected.value === q.correct_answer) {
+            score++;
+            correctAnswers++;
+          }
+        }
+      });
+
+      fetch('/store-result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          usn: '', // Server will use session
+          testType: 'hr',
+          score,
+          attemptedQuestions: attempted,
+          correctAnswers
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        window.location.href = `/result?id=${data.resultId}`;
+      });
+    }
+  </script>
+</body>
+</html>

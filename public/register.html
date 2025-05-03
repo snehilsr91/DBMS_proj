@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+    <h1>Register</h1>
+
+    <form action="/student-register" method="POST">
+        <h2>Student Registration</h2>
+        Name: <input type="text" name="name" required><br>
+        USN: <input type="text" name="usn" required><br>
+        Branch: <input type="text" name="branch" required><br>
+        DOB: <input type="date" name="dob" required><br>
+        <button type="submit">Register</button>
+    </form>
+
+    <form action="/club-register" method="POST">
+        <h2>Club Registration</h2>
+        Club Name: <input type="text" name="name" required><br>
+        Club ID: <input type="text" name="club_id" required><br>
+        Password: <input type="password" name="password" required><br>
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>

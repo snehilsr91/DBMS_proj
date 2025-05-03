@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login</h1>
+
+    <form action="/student-login" method="POST">
+        <h2>Student Login</h2>
+        USN: <input type="text" name="usn" required><br>
+        DOB: <input type="date" name="dob" required><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <p>Don't have an account? <a href="/student-register">Register as Student</a></p>
+
+    <form action="/club-login" method="POST">
+        <h2>Club Login</h2>
+        Club ID: <input type="text" name="club_id" required><br>
+        Password: <input type="password" name="password" required><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <p>Don't have an account? <a href="/club-register">Register as Club</a></p>
+
+    <form action="/admin-login" method="POST">
+        <h2>Admin Login</h2>
+        Username: <input type="text" name="username" required><br>
+        Password: <input type="password" name="password" required><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <p>Don't have an admin account? You can create one manually in the database.</p>
+</body>
+</html>

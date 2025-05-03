@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f4f4f4;
+    }
+    h2 {
+      margin-top: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      background: #fff;
+    }
+    form {
+      display: inline;
+    }
+    button {
+      margin: 0 4px;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Welcome, Admin</h1>
+
+  <h2>Pending Student Registrations</h2>
+  <table id="student-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>USN</th>
+        <th>Branch</th>
+        <th>DOB</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Pending Club Registrations</h2>
+  <table id="club-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Club ID</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function loadData() {
+      const res = await fetch('/admin-home-data');
+      const data = await res.json();
+
+      const studentTable = document.querySelector('#student-table tbody');
+      data.students.forEach(s => {
+        studentTable.innerHTML += `
+          <tr>
+            <td>${s.id}</td>
+            <td>${s.name}</td>
+            <td>${s.usn}</td>
+            <td>${s.branch}</td>
+            <td>${s.dob}</td>
+            <td>
+              <form method="POST" action="/approve-student">
+                <input type="hidden" name="id" value="${s.id}" />
+                <button type="submit">Approve</button>
+              </form>
+              <form method="POST" action="/reject-student">
+                <input type="hidden" name="id" value="${s.id}" />
+                <button type="submit">Reject</button>
+              </form>
+            </td>
+          </tr>
+        `;
+      });
+
+      const clubTable = document.querySelector('#club-table tbody');
+      data.clubs.forEach(c => {
+        clubTable.innerHTML += `
+          <tr>
+            <td>${c.id}</td>
+            <td>${c.name}</td>
+            <td>${c.club_id}</td>
+            <td>
+              <form method="POST" action="/approve-club">
+                <input type="hidden" name="id" value="${c.id}" />
+                <button type="submit">Approve</button>
+              </form>
+              <form method="POST" action="/reject-club">
+                <input type="hidden" name="id" value="${c.id}" />
+                <button type="submit">Reject</button>
+              </form>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    loadData();
+  </script>
+
+</body>
+</html>

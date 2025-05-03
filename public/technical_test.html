@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Technical Test</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #eef2f5; }
+    .question { margin-bottom: 20px; }
+    button { padding: 10px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>Technical Mock Test</h2>
+  <div id="questions"></div>
+  <button onclick="submitTest()">Submit Test</button>
+
+  <script>
+    let questions = [];
+    let answers = {};
+
+    // Fetch the test questions
+    fetch('/start-test?testType=technical')
+      .then(res => res.json())
+      .then(data => {
+        questions = data;
+        const container = document.getElementById('questions');
+        data.forEach((q, i) => {
+          const qDiv = document.createElement('div');
+          qDiv.className = 'question';
+          qDiv.innerHTML = `
+            <p><strong>Q${i + 1}:</strong> ${q.question_text}</p>
+            ${['option_A', 'option_B', 'option_C', 'option_D'].map(opt => `
+              <label><input type="radio" name="q${i}" value="${opt}"> ${q[opt]}</label><br/>
+            `).join('')}
+          `;
+          container.appendChild(qDiv);
+        });
+      });
+
+    // Submit test answers
+    function submitTest() {
+      const responses = [];
+
+      questions.forEach((q, i) => {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selected) {
+          responses.push({
+            question_id: q.id,
+            selected: selected.value
+          });
+        } else {
+          alert(`Please answer Question ${i + 1}`);
+          return;
+        }
+      });
+
+      fetch('/submit-answers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          testType: 'technical',
+          answers: responses
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        window.location.href = `/result?id=${data.resultId}`;
+      })
+      .catch(err => alert('An error occurred while submitting your answers.'));
+    }
+  </script>
+</body>
+</html>
