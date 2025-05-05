@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Learning Resources | NextStepNIE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #d0f0f2, #faffff);
+      padding: 40px 20px;
+    }
+
+    .logo-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+
+    .logo-img {
+      width: 140px;
+      height: auto;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+
+    .logo-img:hover {
+      transform: scale(1.05);
+    }
+
+    h1 {
+      text-align: center;
+      padding-top: 80px;
+      font-size: 2.5rem;
+      color: #22666a;
+      margin-bottom: 10px;
+    }
+
+    .tagline {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #4a7d80;
+      margin-bottom: 40px;
+    }
+
+    nav {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #00bfc6;
+      font-weight: bold;
+      border: 2px solid #00bfc6;
+      padding: 10px 20px;
+      border-radius: 12px;
+      background-color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: #00bfc6;
+      color: white;
+      box-shadow: 0 8px 16px rgba(0, 191, 198, 0.3);
+    }
+
+    .card-container {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .subject-card {
+      background: #ffffff;
+      width: 300px;
+      height: 220px;
+      padding: 25px 20px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 100, 100, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      border: 1px solid #c4f1f3;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .subject-card:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 16px 35px rgba(0, 180, 180, 0.25);
+    }
+
+    .subject-title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #009ca6;
+    }
+
+    .subject-description {
+      font-size: 1rem;
+      color: #4a7d80;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .load-btn {
+      padding: 10px;
+      font-size: 0.95rem;
+      color: #fff;
+      background-color: #00bfc6;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background-color 0.2s ease;
+    }
+
+    .load-btn:hover {
+      background-color: #009ca6;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .subject-card {
+        width: 90%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="logo-link">
+    <img src="logo.png" alt="NextStepNIE Logo" class="logo-img">
+  </a>
+
+  <h1>Explore Learning Resources</h1>
+  <div class="tagline">Choose a subject to access curated materials</div>
+  <nav>
+    <a href="/student-home">← Back to Home</a>
+  </nav>
+
+  <div class="card-container" id="subject-buttons"></div>
+
+  <script>
+    async function loadSubjects() {
+      try {
+        const res = await fetch('/api/subjects');
+        const subjects = await res.json();
+
+        const subjectContainer = document.getElementById('subject-buttons');
+        subjectContainer.innerHTML = '';
+        subjects.forEach(subj => {
+          const card = document.createElement('div');
+          card.className = 'subject-card';
+
+          const title = document.createElement('div');
+          title.className = 'subject-title';
+          title.textContent = subj.name;
+
+          const description = document.createElement('div');
+          description.className = 'subject-description';
+          description.textContent = subj.description;
+
+          const btn = document.createElement('button');
+          btn.className = 'load-btn';
+          btn.textContent = 'View Resources';
+          btn.onclick = () => {
+            // Navigate to the new page with the subject ID
+            window.location.href = `/subject-resources.html?subjectId=${subj.id}`;
+          };
+
+          card.appendChild(title);
+          card.appendChild(description);
+          card.appendChild(btn);
+          subjectContainer.appendChild(card);
+        });
+      } catch (err) {
+        console.error('Error loading subjects:', err);
+      }
+    }
+
+    loadSubjects();
+  </script>
+</body>
+</html>

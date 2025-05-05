@@ -1,41 +1,152 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Mock Tests</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
-      background: #f4f4f4;
-      padding: 40px;
+      background: linear-gradient(135deg, #d0f0f2, #faffff);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
     }
+
     h1 {
-      color: #333;
+      color: #22666a;
+      margin-bottom: 30px;
+      font-size: 2.5rem;
     }
-    .test-option {
-      margin: 20px;
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(2, 500px);
+      gap: 40px;
+      justify-content: center;
+      max-width: 1100px;
+      width: 100%;
     }
-    a.button {
-      display: inline-block;
-      padding: 12px 24px;
-      font-size: 18px;
-      background-color: #007bff;
+
+    .test-card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0, 180, 180, 0.2);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid #c4f1f3;
+      color: #22666a;
+      height: 450px; /* Force equal height for both cards */
+    }
+
+    .test-card:hover {
+      transform: translateY(-12px) scale(1.05);
+      box-shadow: 0 20px 50px rgba(0, 180, 180, 0.4);
+    }
+
+    .test-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #009ca6;
+    }
+
+    .test-desc {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      color: #4a7d80;
+      line-height: 1.6;
+      font-style: italic;
+      flex-grow: 1;
+    }
+
+    .test-info {
+      font-size: 1rem;
+      margin-bottom: 30px;
+      color: #22666a;
+      line-height: 1.6;
+    }
+
+    .test-info strong {
+      font-weight: bold;
+    }
+
+    .start-btn {
+      padding: 15px 30px;
+      font-size: 1.2rem;
       color: white;
-      text-decoration: none;
-      border-radius: 6px;
+      background-color: #00bfc6;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
     }
-    a.button:hover {
-      background-color: #0056b3;
+
+    .start-btn:hover {
+      background-color: #009ca6;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    @media (max-width: 1000px) {
+      .card-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .test-card {
+        width: 90%;
+        height: auto;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
     }
   </style>
 </head>
 <body>
   <h1>Choose Your Mock Test</h1>
-  <div class="test-option">
-    <a href="/technical-test" class="button">Technical Test</a>
-  </div>
-  <div class="test-option">
-    <a href="/hr-test" class="button">HR Test</a>
+  <div class="card-container">
+    <div class="test-card">
+      <div class="test-title">Technical Test</div>
+      <div class="test-desc">
+        Tailored to your branch, this test covers relevant technical concepts and problem-solving skills. Whether you're in Computer Science, Electronics, Mechanical, or another branch, the questions will focus on key topics specific to your field, helping you prepare for technical interviews.
+      </div>
+      <div class="test-info">
+        <strong>Number of Questions:</strong> 20<br>
+        <strong>Time Limit:</strong> 10 minutes<br>
+        <strong>Difficulty Level:</strong> Intermediate to Advanced<br>
+      </div>
+      <a href="/technical-test">
+        <button class="start-btn">Start Test</button>
+      </a>
+    </div>
+
+    <div class="test-card">
+      <div class="test-title">HR Test</div>
+      <div class="test-desc">
+        The HR Test evaluates your communication, personality, and behavioral skills. It includes questions designed to assess your readiness for job interviews, teamwork, leadership, and problem-solving in a workplace setting.
+      </div>
+      <div class="test-info">
+        <strong>Number of Questions:</strong> 10<br>
+        <strong>Time Limit:</strong> 5 minutes<br>
+        <strong>Difficulty Level:</strong> Beginner to Intermediate<br>
+      </div>
+      <a href="/hr-test">
+        <button class="start-btn">Start Test</button>
+      </a>
+    </div>
   </div>
 </body>
 </html>

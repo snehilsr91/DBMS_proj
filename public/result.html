@@ -1,0 +1,83 @@
+<!-- public/result.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Result</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #d0f0f2, #faffff);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .result-card {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0, 180, 180, 0.2);
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      color: #22666a;
+    }
+
+    h2 {
+      font-size: 2rem;
+      color: #009ca6;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin: 10px 0;
+      color: #4a7d80;
+    }
+
+    a {
+      margin-top: 30px;
+      display: inline-block;
+      padding: 12px 30px;
+      background-color: #00bfc6;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    a:hover {
+      background-color: #009ca6;
+    }
+  </style>
+</head>
+<body>
+  <div class="result-card">
+    <h2>Test Result</h2>
+    <p id="testType"></p>
+    <p id="score"></p>
+    <p id="correct"></p>
+    <p id="timestamp"></p>
+    <a href="/student-home">Back to Home</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+
+    fetch(`/api/result?id=${id}`)
+      .then(res => res.json())
+      .then(result => {
+        document.getElementById('testType').textContent = `Test Type: ${result.test_type}`;
+        document.getElementById('score').textContent = `Score: ${result.score} / ${result.attempted_questions}`;
+        document.getElementById('correct').textContent = `Correct Answers: ${result.correct_answers}`;
+        document.getElementById('timestamp').textContent = `Test Taken On: ${new Date(result.timestamp).toLocaleString()}`;
+      })
+      .catch(() => {
+        document.querySelector('.result-card').innerHTML = '<h2>Result not found</h2>';
+      });
+  </script>
+</body>
+</html>

@@ -3,66 +3,140 @@
 <head>
   <meta charset="UTF-8">
   <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-      background: #f4f4f4;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #d0f0f2, #faffff);
+      margin: 0;
+      padding: 20px;
     }
-    h2 {
-      margin-top: 2rem;
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background-color: #ffffff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 14px 28px rgba(0, 191, 198, 0.25);
     }
+
+    h1, h2 {
+      text-align: center;
+      color: #0b868b;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 2rem;
+      margin: 20px 0;
     }
+
     th, td {
       padding: 12px;
-      border: 1px solid #ccc;
-      background: #fff;
+      text-align: left;
+      border: 1px solid #b2e4e6;
+      background-color: #faffff;
     }
+
+    th {
+      background-color: #c4f1f3;
+      color: #0b868b;
+    }
+
+    tr:hover {
+      background-color: #e0f7f8;
+    }
+
+    button {
+      border-radius: 10px;
+      border: none;
+      padding: 8px 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background-color: #00bfc6;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0b868b;
+    }
+
     form {
       display: inline;
     }
-    button {
-      margin: 0 4px;
-      padding: 6px 12px;
+    .logout-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      color: #fff;
+      background-color: #ff4d4d;
+      border: none;
+      border-radius: 50px;
       cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #e60000;
+      transform: scale(1.1);
+      box-shadow: 0 8px 16px rgba(255, 77, 77, 0.2);
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Welcome, Admin</h1>
 
-  <h1>Welcome, Admin</h1>
+    <h2>Pending Student Registrations</h2>
+    <table id="student-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>USN</th>
+          <th>Branch</th>
+          <th>DOB</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-  <h2>Pending Student Registrations</h2>
-  <table id="student-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>USN</th>
-        <th>Branch</th>
-        <th>DOB</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <h2>Pending Club Registrations</h2>
+    <table id="club-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Club ID</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-  <h2>Pending Club Registrations</h2>
-  <table id="club-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Club ID</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <h2>Pending Resource Suggestions</h2>
+    <table id="resource-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Type</th>
+          <th>Link</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
   <script>
     async function loadData() {
@@ -71,13 +145,16 @@
 
       const studentTable = document.querySelector('#student-table tbody');
       data.students.forEach(s => {
+        const dobFormatted = new Date(s.dob).toLocaleDateString('en-IN', {
+          day: 'numeric', month: 'long', year: 'numeric'
+        });
         studentTable.innerHTML += `
           <tr>
             <td>${s.id}</td>
             <td>${s.name}</td>
             <td>${s.usn}</td>
             <td>${s.branch}</td>
-            <td>${s.dob}</td>
+            <td>${dobFormatted}</td>
             <td>
               <form method="POST" action="/approve-student">
                 <input type="hidden" name="id" value="${s.id}" />
@@ -112,10 +189,32 @@
           </tr>
         `;
       });
+
+      const resourceTable = document.querySelector('#resource-table tbody');
+      data.resources.forEach(r => {
+        resourceTable.innerHTML += `
+          <tr>
+            <td>${r.id}</td>
+            <td>${r.title}</td>
+            <td>${r.type}</td>
+            <td><a href="${r.link}" target="_blank">View Resource</a></td>
+            <td>
+              <form method="POST" action="/approve-resource">
+                <input type="hidden" name="id" value="${r.id}" />
+                <button type="submit">Approve</button>
+              </form>
+              <form method="POST" action="/reject-resource">
+                <input type="hidden" name="id" value="${r.id}" />
+                <button type="submit">Reject</button>
+              </form>
+            </td>
+          </tr>
+        `;
+      });
     }
 
     loadData();
   </script>
-
+  <a href="index.html"><button class="logout-btn">Logout</button></a>
 </body>
 </html>

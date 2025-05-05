@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manage Activities</title>
+  <style>
+    body { font-family: 'Segoe UI'; padding: 20px; background-color: #f9fdfd; }
+    h2 { color: #0b868b; }
+    input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; }
+    button { padding: 10px 20px; border: none; background-color: #00bfc6; color: white; border-radius: 8px; cursor: pointer; }
+    button:hover { background-color: #0b868b; }
+  </style>
+</head>
+<body>
+  <h2>Manage Activities</h2>
+  <form method="POST" action="/create-activity">
+    <input type="text" name="title" placeholder="Activity Title" required />
+    <input type="url" name="link" placeholder="Link (optional)" />
+    <button type="submit">Create</button>
+  </form>
+
+  <div id="activity-list"></div>
+
+  <script>
+    async function loadActivities() {
+      const res = await fetch('/api/club-activities');
+      const data = await res.json();
+      const container = document.getElementById('activity-list');
+      container.innerHTML = data.map(a => `
+        <div>
+          <h3>${a.title}</h3>
+          ${a.link ? `<a href="${a.link}" target="_blank">${a.link}</a>` : ''}
+          <form method="POST" action="/delete-activity">
+            <input type="hidden" name="id" value="${a.id}" />
+            <button>Delete</button>
+          </form>
+        </div>
+      `).join('');
+    }
+    loadActivities();
+  </script>
+</body>
+</html>

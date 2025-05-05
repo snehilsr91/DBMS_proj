@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manage Announcements</title>
+  <style>
+    body { font-family: 'Segoe UI'; padding: 20px; background-color: #f9fdfd; }
+    h2 { color: #0b868b; }
+    form, table { margin-top: 20px; }
+    input, textarea { padding: 10px; width: 100%; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; }
+    button { padding: 10px 20px; border: none; background-color: #00bfc6; color: white; border-radius: 8px; cursor: pointer; }
+    button:hover { background-color: #0b868b; }
+    .announcement { margin-bottom: 20px; }
+    #edit-form { display: none; }
+  </style>
+</head>
+<body>
+  <h2>Manage Announcements</h2>
+
+  <!-- Create Announcement Form -->
+  <form method="POST" action="/create-announcement">
+    <input type="text" name="title" placeholder="Title" required />
+    <textarea name="content" placeholder="Content"></textarea>
+    <button type="submit">Create</button>
+  </form>
+
+  <div id="announcement-list"></div>
+
+  <!-- Edit Announcement Form -->
+  <div id="edit-form">
+    <h3>Edit Announcement</h3>
+    <form id="edit-announcement-form" method="POST" action="/edit-announcement">
+      <input type="hidden" name="id" id="edit-id">
+      <input type="text" name="title" id="edit-title" placeholder="Title" required />
+      <textarea name="content" id="edit-content" placeholder="Content"></textarea>
+      <button type="submit">Save Changes</button>
+      <button type="button" onclick="closeEditForm()">Cancel</button>
+    </form>
+  </div>
+
+  <script>
+    async function loadAnnouncements() {
+      const res = await fetch('/api/club-announcements');
+      const data = await res.json();
+      const container = document.getElementById('announcement-list');
+      container.innerHTML = data.map(a => `
+        <div class="announcement">
+          <h3>${a.title}</h3>
+          <p>${a.content}</p>
+          
+          <!-- Edit Button -->
+          <button onclick="openEditForm(${a.id}, '${a.title}', '${a.content}')">Edit</button>
+          
+          <!-- Delete Button -->
+          <form method="POST" action="/delete-announcement" style="display:inline;">
+            <input type="hidden" name="id" value="${a.id}" />
+            <button type="submit">Delete</button>
+          </form>
+        </div>
+      `).join('');
+    }
+
+    // Load announcements on page load
+    loadAnnouncements();
+
+    // Open the edit form with the existing data pre-filled
+    function openEditForm(id, title, content) {
+      document.getElementById('edit-id').value = id;
+      document.getElementById('edit-title').value = title;
+      document.getElementById('edit-content').value = content;
+      document.getElementById('edit-form').style.display = 'block';
+    }
+
+    // Close the edit form without saving
+    function closeEditForm() {
+      document.getElementById('edit-form').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

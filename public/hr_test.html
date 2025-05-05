@@ -1,11 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>HR Test</title>
   <style>
-    body { font-family: Arial; padding: 20px; background: #eef2f5; }
-    .question { margin-bottom: 20px; }
-    button { padding: 10px; margin-top: 10px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #d0f0f2, #faffff);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: #22666a;
+      font-size: 2.2rem;
+      margin-bottom: 30px;
+    }
+
+    #questions {
+      max-width: 900px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .question {
+      background: #ffffff;
+      padding: 25px 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 180, 180, 0.15);
+      border: 1px solid #c4f1f3;
+      color: #22666a;
+      font-size: 1.1rem;
+    }
+
+    .question p {
+      font-weight: bold;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      color: #009ca6;
+    }
+
+    .question label {
+      display: block;
+      margin-bottom: 10px;
+      cursor: pointer;
+      color: #4a7d80;
+    }
+
+    .question input[type="radio"] {
+      margin-right: 8px;
+    }
+
+    button {
+      margin-top: 40px;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      color: white;
+      background-color: #00bfc6;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #009ca6;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 20px;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      .question {
+        padding: 20px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -26,9 +105,9 @@
           const qDiv = document.createElement('div');
           qDiv.className = 'question';
           qDiv.innerHTML = `
-            <p><strong>Q${i + 1}:</strong> ${q.question_text}</p>
+            <p>Q${i + 1}: ${q.question_text}</p>
             ${['option_A', 'option_B', 'option_C', 'option_D'].map(opt => `
-              <label><input type="radio" name="q${i}" value="${opt}"> ${q[opt]}</label><br/>
+              <label><input type="radio" name="q${i}" value="${opt}"> ${q[opt]}</label>
             `).join('')}
           `;
           container.appendChild(qDiv);
@@ -36,36 +115,33 @@
       });
 
     function submitTest() {
-      let score = 0;
-      let correctAnswers = 0;
-      let attempted = 0;
+      const responses = [];
 
-      questions.forEach((q, i) => {
+      for (let i = 0; i < questions.length; i++) {
         const selected = document.querySelector(`input[name="q${i}"]:checked`);
-        if (selected) {
-          attempted++;
-          if (selected.value === q.correct_answer) {
-            score++;
-            correctAnswers++;
-          }
+        if (!selected) {
+          alert(`Please answer Question ${i + 1}`);
+          return;
         }
-      });
+        responses.push({
+          question_id: questions[i].id,
+          selected: selected.value
+        });
+      }
 
-      fetch('/store-result', {
+      fetch('/submit-answers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          usn: '', // Server will use session
           testType: 'hr',
-          score,
-          attemptedQuestions: attempted,
-          correctAnswers
+          answers: responses
         })
       })
       .then(res => res.json())
       .then(data => {
         window.location.href = `/result?id=${data.resultId}`;
-      });
+      })
+      .catch(err => alert('An error occurred while submitting your answers.'));
     }
   </script>
 </body>

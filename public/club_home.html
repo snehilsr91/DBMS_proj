@@ -1,8 +1,44 @@
 <!DOCTYPE html>
 <html>
-<head><title>Club Home</title></head>
+<head>
+  <title>Club Home</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f9ff;
+      text-align: center;
+      padding: 50px;
+    }
+    h2 {
+      color: #007b8f;
+    }
+    .button-container {
+      margin-top: 40px;
+    }
+    a button {
+      display: block;
+      margin: 20px auto;
+      padding: 15px 30px;
+      font-size: 16px;
+      background-color: #00bfc6;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    a button:hover {
+      background-color: #0b868b;
+    }
+  </style>
+</head>
 <body>
-  <h2>Welcome Club</h2>
+  <h2>Welcome, Club</h2>
   <p>You are logged in.</p>
+  <div class="button-container">
+    <a href="manage_announcements.html"><button>Manage Announcement</button></a>
+    <a href="manage_activities.html"><button>Manage Activities</button></a>
+    <a href="edit_club_profile.html"><button>Edit Club Profile</button></a>
+  </div>
 </body>
 </html>

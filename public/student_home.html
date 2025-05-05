@@ -1,25 +1,196 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Student Home</title>
-  <link rel="stylesheet" href="/style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #d0f0f2, #faffff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+      padding: 40px 20px;
+      position: relative;
+    }
+
+    .logo-container {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+
+    .logo-container img {
+      width: 200px; /* Original rectangular size */
+      height: auto;
+      object-fit: contain;
+    }
+
+    h2 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      color: #22666a;
+      text-align: center;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      color: #4a7d80;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(2, 320px);
+      gap: 40px;
+      justify-content: center;
+      max-width: 1200px;
+      width: 100%;
+      margin-bottom: 60px;
+    }
+
+    .login-card {
+      background: #ffffff;
+      width: 100%;
+      height: 250px;
+      padding: 30px 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 100, 100, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      border: 1px solid #c4f1f3;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .login-card:hover {
+      transform: translateY(-12px) scale(1.04);
+      box-shadow: 0 16px 35px rgba(0, 180, 180, 0.3);
+    }
+
+    .login-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #009ca6;
+    }
+
+    .login-desc {
+      font-size: 1.05rem;
+      color: #4a7d80;
+      margin: 20px 0;
+    }
+
+    .login-btn {
+      padding: 12px 20px;
+      font-size: 1rem;
+      color: #fff;
+      background-color: #00bfc6;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .login-btn:hover {
+      background-color: #009ca6;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .logout-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      color: #fff;
+      background-color: #ff4d4d;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #e60000;
+      transform: scale(1.1);
+      box-shadow: 0 8px 16px rgba(255, 77, 77, 0.2);
+    }
+
+    @media (max-width: 1000px) {
+      .login-card {
+        width: 90%;
+        max-width: 400px;
+        height: auto;
+      }
+
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 30px;
+      }
+
+      .card-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome, Student!</h1>
+  <div class="logo-container">
+    <img src="logo.png" alt="NextStepNIE Logo">
+  </div>
+  <h2>Welcome, Student!</h2>
+  <div class="tagline">Make the most of your academic journey with us</div>
+  <div class="card-container">
+    
+    <a href="/mock-tests">
+      <div class="login-card">
+        <div class="login-title">Mock Tests</div>
+        <div class="login-desc">Prepare for your technical interviews and assessments.</div>
+        <button class="login-btn">Start</button>
+      </div>
+    </a>
 
-  <nav>
-    <ul>
-      <li><a href="/mock-tests">Mock Tests</a></li>
-      <li><a href="/resources">Learning Resources</a></li>
-      <li><a href="/club-activities">Club Activities</a></li>
-      <li><a href="/logout">Logout</a></li>
-    </ul>
-  </nav>
+    <a href="/resources">
+      <div class="login-card">
+        <div class="login-title">Learning Resources</div>
+        <div class="login-desc">Access study materials and resources to enhance your learning.</div>
+        <button class="login-btn">Explore</button>
+      </div>
+    </a>
 
-  <section>
-    <h2>Your Dashboard</h2>
-    <p>Here you can access mock placement materials, track performance, and participate in club-hosted quizzes!</p>
-  </section>
+    <a href="/club-activities">
+      <div class="login-card">
+        <div class="login-title">Club Activities</div>
+        <div class="login-desc">Join clubs, participate in events, and connect with like-minded students.</div>
+        <button class="login-btn">Join Now</button>
+      </div>
+    </a>
+
+    <a href="/performance-analytics">
+      <div class="login-card">
+        <div class="login-title">Performance Analytics</div>
+        <div class="login-desc">Track your progress and identify areas to improve.</div>
+        <button class="login-btn">View Analytics</button>
+      </div>
+    </a>
+
+  </div>
+  <a href="index.html"><button class="logout-btn">Logout</button></a>
+  
 </body>
 </html>

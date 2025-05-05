@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Auth</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Flatpickr CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #d0f0f2, #faffff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      position: relative;
+      width: 800px;
+      max-width: 100%;
+      height: 500px;
+      background-color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 14px 28px rgba(0, 100, 100, 0.2);
+      overflow: hidden;
+    }
+
+    .form-container {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 50%;
+      transition: all 0.6s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 50px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .sign-in-container {
+      left: 0;
+    }
+
+    .sign-up-container {
+      left: 100%;
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .container.right-panel-active .sign-up-container {
+      transform: translateX(-100%);
+      opacity: 1;
+      z-index: 5;
+    }
+
+    form input, form select {
+      margin: 8px 0;
+      padding: 12px 15px;
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #c4f1f3;
+      background: #f0f0f0;
+    }
+
+    form select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background: #f0f0f0 url("data:image/svg+xml,%3Csvg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat right 12px center;
+      background-size: 18px;
+      padding-right: 40px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    form select:focus {
+      outline: none;
+      border-color: #00bfc6;
+      background-color: #e8fafa;
+    }
+
+    button {
+      border-radius: 20px;
+      border: none;
+      padding: 12px 45px;
+      font-weight: bold;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    /* Default state */
+    .sign-in-container button {
+      background-color: #00bfc6;
+      color: white;
+    }
+
+    .sign-up-container button {
+      background-color: white;
+      color: #00bfc6;
+    }
+
+    /* When overlay is active (register is active), flip styles */
+    .container.right-panel-active .sign-in-container button {
+      background-color: white;
+      color: #00bfc6;
+    }
+
+    .container.right-panel-active .sign-up-container button {
+      background-color: #00bfc6;
+      color: white;
+    }
+
+    .overlay-container {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+      transition: transform 0.6s ease-in-out;
+      z-index: 100;
+    }
+
+    .container.right-panel-active .overlay-container {
+      transform: translateX(-100%);
+    }
+
+    .overlay {
+      background: linear-gradient(to right, #00bfc6, #009ca6);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      color: white;
+      position: relative;
+      left: -100%;
+      height: 100%;
+      width: 200%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translateX(0);
+      transition: transform 0.6s ease-in-out;
+    }
+
+    .container.right-panel-active .overlay {
+      transform: translateX(50%);
+    }
+
+    .overlay-panel {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 40px;
+      text-align: center;
+      height: 100%;
+      width: 50%;
+    }
+
+    .overlay-left {
+      left: 0;
+    }
+
+    .overlay-right {
+      right: 0;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 14px;
+      padding: 0 10px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        border-radius: 0;
+      }
+
+      .overlay {
+        display: none;
+      }
+
+      .form-container {
+        position: relative;
+        width: 100% !important;
+        opacity: 1 !important;
+        transform: translateX(0) !important;
+      }
+    }
+
+    .logo-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+    }
+
+    .logo-img {
+      width: 150px; /* Adjust size as needed */
+      height: auto;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+
+    .logo-img:hover {
+      transform: scale(1.05);
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container" id="authContainer">
+    <!-- Login Form -->
+    <div class="form-container sign-in-container">
+      <form action="/student-login" method="POST">
+        <h1>Student Login</h1>
+        <input name="usn" placeholder="USN" required />
+        <input name="dob" type="date" placeholder="Date of Birth (YYYY-MM-DD)" required />
+        <button type="submit">Login</button>
+      </form>
+    </div>
+
+    <!-- Register Form -->
+    <div class="form-container sign-up-container">
+      <form action="/student-register" method="POST">
+        <h1>Student Registration</h1>
+        <input type="text" name="name" placeholder="Name" required />
+        <input type="text" name="usn" placeholder="USN" required />
+        <select name="branch" required>
+          <option value="">Select Branch</option>
+          <option value="CSE">CSE</option>
+          <option value="AIML">AIML</option>
+          <option value="ISE">ISE</option>
+          <option value="ECE">ECE</option>
+          <option value="EEE">EEE</option>
+          <option value="Mech">Mech</option>
+          <option value="Civil">Civil</option>
+        </select>
+        <input type="date" name="dob" placeholder="Date of Birth (YYYY-MM-DD)" required />
+        <button type="submit">Register</button>
+      </form>
+    </div>
+
+    <!-- Overlay Panel -->
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h1>Already a Student?</h1>
+          <p>Login using your USN and Date of Birth</p>
+          <button onclick="togglePanel(false)">Login</button>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h1>New Here?</h1>
+          <p>Register to get started!</p>
+          <button onclick="togglePanel(true)">Register</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const container = document.getElementById('authContainer');
+
+    function togglePanel(signUp) {
+      if (signUp) {
+        container.classList.add('right-panel-active');
+      } else {
+        container.classList.remove('right-panel-active');
+      }
+    }
+  </script>
+  <!-- Flatpickr JS -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    flatpickr("input[name='dob']", {
+      dateFormat: "Y-m-d", // Customize format if needed
+      maxDate: "today",
+      allowInput: true,
+    });
+  </script>
+</body>
+<a href="index.html" class="logo-link">
+  <img src="logo.png" alt="NextStepNIE Logo" class="logo-img">
+</a>
+
+</html>

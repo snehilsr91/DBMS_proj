@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Club Profile</title>
+  <style>
+    body { font-family: 'Segoe UI'; padding: 20px; background-color: #f0f9ff; }
+    h2 { color: #0b868b; }
+    input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; }
+    button { padding: 10px 20px; background-color: #00bfc6; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background-color: #0b868b; }
+  </style>
+</head>
+<body>
+  <h2>Edit Club Profile</h2>
+  <form method="POST" action="/update-club-profile">
+    <textarea name="description" placeholder="Description" required></textarea>
+    <input type="email" name="contact_email" placeholder="Contact Email" />
+    <input type="url" name="logo_url" placeholder="Logo URL" />
+    <button type="submit">Update</button>
+  </form>
+</body>
+</html>
