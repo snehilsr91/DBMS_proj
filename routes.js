@@ -427,5 +427,54 @@ router.post('/update-club-profile', (req, res) => {
     });
 });
 
+router.get('/api/club-data', (req, res) => {
+    const activitiesQuery = 'SELECT * FROM club_activities ORDER BY created_at DESC';
+    const announcementsQuery = 'SELECT * FROM club_announcements ORDER BY created_at DESC';
 
+    db.query(activitiesQuery, (err, activities) => {
+        if (err) {
+            console.error('Error fetching activities:', err);
+            return res.status(500).json({ error: 'Failed to fetch activities' });
+        }
+
+        db.query(announcementsQuery, (err, announcements) => {
+            if (err) {
+                console.error('Error fetching announcements:', err);
+                return res.status(500).json({ error: 'Failed to fetch announcements' });
+            }
+
+            const clubIds = new Set([
+                ...activities.map(a => a.club_id),
+                ...announcements.map(a => a.club_id)
+            ]);
+
+            const clubQuery = `SELECT club_id, name FROM clubs WHERE club_id IN (${[...clubIds].map(() => '?').join(',')})`;
+
+            db.query(clubQuery, [...clubIds], (err, clubs) => {
+                if (err) {
+                    console.error('Error fetching clubs:', err);
+                    return res.status(500).json({ error: 'Failed to fetch clubs' });
+                }
+
+                const clubMap = {};
+                clubs.forEach(club => {
+                    clubMap[club.club_id] = club.name;
+                });
+
+                // Add club_name to each activity and announcement
+                activities.forEach(a => a.club_name = clubMap[a.club_id] || 'Unknown Club');
+                announcements.forEach(a => a.club_name = clubMap[a.club_id] || 'Unknown Club');
+
+                res.json({ activities, announcements });
+            });
+        });
+    });
+});
+
+
+// Serve the frontend HTML
+router.get('/club-activities', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'club-activities.html'));
+});
+  
 module.exports = router;

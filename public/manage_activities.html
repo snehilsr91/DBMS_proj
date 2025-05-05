@@ -1,24 +1,151 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Manage Activities</title>
   <style>
-    body { font-family: 'Segoe UI'; padding: 20px; background-color: #f9fdfd; }
-    h2 { color: #0b868b; }
-    input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; }
-    button { padding: 10px 20px; border: none; background-color: #00bfc6; color: white; border-radius: 8px; cursor: pointer; }
-    button:hover { background-color: #0b868b; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #d0f0f2, #faffff);
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      text-align: center;
+      color: #22666a;
+      margin-bottom: 30px;
+    }
+
+    .form-card {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 150, 150, 0.1);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    input[type="text"], input[type="url"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      background-color: #00bfc6;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #009ca6;
+    }
+
+    .activity-list {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    .activity-card {
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(0, 150, 150, 0.1);
+      position: relative;
+    }
+
+    .activity-card h3 {
+      color: #009ca6;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    .activity-card p {
+      color: #333;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    .activity-card .actions {
+      display: flex;
+      gap: 15px;
+    }
+
+    .actions form,
+    .actions button {
+      display: inline;
+    }
+
+    #edit-form {
+      display: none;
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(0, 150, 150, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      .activity-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .activity-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
   </style>
 </head>
 <body>
-  <h2>Manage Activities</h2>
-  <form method="POST" action="/create-activity">
-    <input type="text" name="title" placeholder="Activity Title" required />
-    <input type="url" name="link" placeholder="Link (optional)" />
-    <button type="submit">Create</button>
-  </form>
 
-  <div id="activity-list"></div>
+  <h2>Manage Activities</h2>
+
+  <!-- Create Activity Form -->
+  <div class="form-card">
+    <form method="POST" action="/create-activity">
+      <input type="text" name="title" placeholder="Activity Title" required />
+      <input type="url" name="link" placeholder="Link (optional)" />
+      <button type="submit">Create Activity</button>
+    </form>
+  </div>
+
+  <!-- Edit Activity Form -->
+  <div id="edit-form">
+    <h3 style="margin-bottom: 20px; color: #22666a;">Edit Activity</h3>
+    <form id="edit-activity-form" method="POST" action="/edit-activity">
+      <input type="hidden" name="id" id="edit-id">
+      <input type="text" name="title" id="edit-title" placeholder="Activity Title" required />
+      <input type="url" name="link" id="edit-link" placeholder="Link (optional)" />
+      <div style="display: flex; gap: 10px;">
+        <button type="submit">Save Changes</button>
+        <button type="button" onclick="closeEditForm()" style="background-color: #ff4d4d;">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Activity List -->
+  <div class="activity-list" id="activity-list"></div>
 
   <script>
     async function loadActivities() {
@@ -26,17 +153,34 @@
       const data = await res.json();
       const container = document.getElementById('activity-list');
       container.innerHTML = data.map(a => `
-        <div>
+        <div class="activity-card">
           <h3>${a.title}</h3>
-          ${a.link ? `<a href="${a.link}" target="_blank">${a.link}</a>` : ''}
-          <form method="POST" action="/delete-activity">
-            <input type="hidden" name="id" value="${a.id}" />
-            <button>Delete</button>
-          </form>
+          ${a.link ? `<a href="${a.link}" target="_blank">${a.link}</a><br>` : ''}
+          <div class="actions">
+            <button onclick="openEditForm(${a.id}, \`${a.title.replace(/`/g, '\\`')}\`, \`${(a.link || '').replace(/`/g, '\\`')}\`)">Edit</button>
+            <form method="POST" action="/delete-activity">
+              <input type="hidden" name="id" value="${a.id}" />
+              <button type="submit" style="background-color: #ff4d4d;">Delete</button>
+            </form>
+          </div>
         </div>
       `).join('');
     }
+
     loadActivities();
+
+    function openEditForm(id, title, link) {
+      document.getElementById('edit-id').value = id;
+      document.getElementById('edit-title').value = title;
+      document.getElementById('edit-link').value = link;
+      document.getElementById('edit-form').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function closeEditForm() {
+      document.getElementById('edit-form').style.display = 'none';
+    }
   </script>
+
 </body>
 </html>

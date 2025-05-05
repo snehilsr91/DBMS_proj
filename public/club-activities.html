@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Club Activities & Announcements | NextStepNIE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #00bfc6, #004d4d);
+      padding: 0 20px;
+      color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+      padding-top: 100px;
+      font-size: 3rem;
+      color: #fff;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .section {
+      max-width: 900px;
+      margin: 50px auto;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+    }
+
+    .section h2 {
+      color: #fff;
+      font-size: 2rem;
+      margin-bottom: 25px;
+      text-align: center;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .item {
+      background: #004d4d;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .item:hover {
+      background-color: #009ca6;
+      transform: translateY(-5px);
+    }
+
+    .item h3 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: #c1e6e8;
+    }
+
+    .item p {
+      margin: 10px 0 0;
+      font-size: 1rem;
+    }
+
+    .item a {
+      color: #c1e6e8;
+      text-decoration: none;
+    }
+
+    .item a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+      .section {
+        margin: 20px 10px;
+        padding: 20px;
+      }
+      .item {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Club Activities & Announcements</h1>
+
+  <div class="section">
+    <h2>Upcoming Activities</h2>
+    <div id="activities-list"></div>
+  </div>
+
+  <div class="section">
+    <h2>Latest Announcements</h2>
+    <div id="announcements-list"></div>
+  </div>
+
+  <script>
+    async function loadClubData() {
+      try {
+        const res = await fetch('/api/club-data');
+        const data = await res.json();
+
+        const activitiesContainer = document.getElementById('activities-list');
+        const announcementsContainer = document.getElementById('announcements-list');
+
+        // Clear existing content
+        activitiesContainer.innerHTML = '';
+        announcementsContainer.innerHTML = '';
+
+        // Activities
+        data.activities.forEach(act => {
+          const div = document.createElement('div');
+          div.className = 'item';
+
+          const title = document.createElement('h3');
+          title.textContent = act.title;
+
+          const club = document.createElement('p');
+          club.innerHTML = `<strong>Club:</strong> ${act.club_name || 'Unknown Club'}`;
+
+          const link = document.createElement('a');
+          link.href = act.link || '#';
+          link.target = '_blank';
+          link.textContent = act.link ? 'View Activity Link' : 'No link provided';
+
+          const date = document.createElement('p');
+          date.innerHTML = `<strong>Date:</strong> ${new Date(act.created_at).toLocaleDateString()}`;
+
+          div.appendChild(title);
+          div.appendChild(club);
+          div.appendChild(link);
+          div.appendChild(date);
+
+          activitiesContainer.appendChild(div);
+        });
+
+        // Announcements
+        data.announcements.forEach(ann => {
+          const div = document.createElement('div');
+          div.className = 'item';
+
+          const title = document.createElement('h3');
+          title.textContent = ann.title;
+
+          const club = document.createElement('p');
+          club.innerHTML = `<strong>Club:</strong> ${ann.club_name || 'Unknown Club'}`;
+
+          const content = document.createElement('p');
+          content.textContent = ann.content || 'No details provided.';
+
+          const date = document.createElement('p');
+          date.innerHTML = `<strong>Date:</strong> ${new Date(ann.created_at).toLocaleDateString()}`;
+
+          div.appendChild(title);
+          div.appendChild(club);
+          div.appendChild(content);
+          div.appendChild(date);
+
+          announcementsContainer.appendChild(div);
+        });
+
+      } catch (err) {
+        console.error('Error loading club data:', err);
+      }
+    }
+
+    loadClubData();
+  </script>
+</body>
+</html>

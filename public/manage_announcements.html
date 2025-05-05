@@ -1,41 +1,151 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Manage Announcements</title>
   <style>
-    body { font-family: 'Segoe UI'; padding: 20px; background-color: #f9fdfd; }
-    h2 { color: #0b868b; }
-    form, table { margin-top: 20px; }
-    input, textarea { padding: 10px; width: 100%; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; }
-    button { padding: 10px 20px; border: none; background-color: #00bfc6; color: white; border-radius: 8px; cursor: pointer; }
-    button:hover { background-color: #0b868b; }
-    .announcement { margin-bottom: 20px; }
-    #edit-form { display: none; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #d0f0f2, #faffff);
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      text-align: center;
+      color: #22666a;
+      margin-bottom: 30px;
+    }
+
+    .form-card {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 150, 150, 0.1);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      background-color: #00bfc6;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #009ca6;
+    }
+
+    .announcement-list {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    .announcement-card {
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(0, 150, 150, 0.1);
+      position: relative;
+    }
+
+    .announcement-card h3 {
+      color: #009ca6;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    .announcement-card p {
+      color: #333;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    .announcement-card .actions {
+      display: flex;
+      gap: 15px;
+    }
+
+    .actions form,
+    .actions button {
+      display: inline;
+    }
+
+    #edit-form {
+      display: none;
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(0, 150, 150, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      .announcement-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .announcement-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
   </style>
 </head>
 <body>
+
   <h2>Manage Announcements</h2>
 
   <!-- Create Announcement Form -->
-  <form method="POST" action="/create-announcement">
-    <input type="text" name="title" placeholder="Title" required />
-    <textarea name="content" placeholder="Content"></textarea>
-    <button type="submit">Create</button>
-  </form>
+  <div class="form-card">
+    <form method="POST" action="/create-announcement">
+      <input type="text" name="title" placeholder="Title" required />
+      <textarea name="content" placeholder="Content"></textarea>
+      <button type="submit">Create Announcement</button>
+    </form>
+  </div>
 
-  <div id="announcement-list"></div>
-
-  <!-- Edit Announcement Form -->
+  <!-- Edit Form -->
   <div id="edit-form">
-    <h3>Edit Announcement</h3>
+    <h3 style="margin-bottom: 20px; color: #22666a;">Edit Announcement</h3>
     <form id="edit-announcement-form" method="POST" action="/edit-announcement">
       <input type="hidden" name="id" id="edit-id">
       <input type="text" name="title" id="edit-title" placeholder="Title" required />
       <textarea name="content" id="edit-content" placeholder="Content"></textarea>
-      <button type="submit">Save Changes</button>
-      <button type="button" onclick="closeEditForm()">Cancel</button>
+      <div style="display: flex; gap: 10px;">
+        <button type="submit">Save Changes</button>
+        <button type="button" onclick="closeEditForm()" style="background-color: #ff4d4d;">Cancel</button>
+      </div>
     </form>
   </div>
+
+  <!-- Announcement List -->
+  <div class="announcement-list" id="announcement-list"></div>
 
   <script>
     async function loadAnnouncements() {
@@ -43,37 +153,34 @@
       const data = await res.json();
       const container = document.getElementById('announcement-list');
       container.innerHTML = data.map(a => `
-        <div class="announcement">
+        <div class="announcement-card">
           <h3>${a.title}</h3>
           <p>${a.content}</p>
-          
-          <!-- Edit Button -->
-          <button onclick="openEditForm(${a.id}, '${a.title}', '${a.content}')">Edit</button>
-          
-          <!-- Delete Button -->
-          <form method="POST" action="/delete-announcement" style="display:inline;">
-            <input type="hidden" name="id" value="${a.id}" />
-            <button type="submit">Delete</button>
-          </form>
+          <div class="actions">
+            <button onclick="openEditForm(${a.id}, \`${a.title.replace(/`/g, '\\`')}\`, \`${a.content.replace(/`/g, '\\`')}\`)">Edit</button>
+            <form method="POST" action="/delete-announcement">
+              <input type="hidden" name="id" value="${a.id}" />
+              <button type="submit" style="background-color: #ff4d4d;">Delete</button>
+            </form>
+          </div>
         </div>
       `).join('');
     }
 
-    // Load announcements on page load
     loadAnnouncements();
 
-    // Open the edit form with the existing data pre-filled
     function openEditForm(id, title, content) {
       document.getElementById('edit-id').value = id;
       document.getElementById('edit-title').value = title;
       document.getElementById('edit-content').value = content;
       document.getElementById('edit-form').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Close the edit form without saving
     function closeEditForm() {
       document.getElementById('edit-form').style.display = 'none';
     }
   </script>
+
 </body>
 </html>

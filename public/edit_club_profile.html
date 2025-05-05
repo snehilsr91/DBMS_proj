@@ -1,22 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Edit Club Profile</title>
   <style>
-    body { font-family: 'Segoe UI'; padding: 20px; background-color: #f0f9ff; }
-    h2 { color: #0b868b; }
-    input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; }
-    button { padding: 10px 20px; background-color: #00bfc6; color: white; border: none; border-radius: 8px; cursor: pointer; }
-    button:hover { background-color: #0b868b; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #d0f0f2, #faffff);
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      text-align: center;
+      color: #22666a;
+      margin-bottom: 30px;
+    }
+
+    .form-card {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 150, 150, 0.1);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    input[type="text"], input[type="email"], input[type="url"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      background-color: #00bfc6;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #009ca6;
+    }
+
+    @media (max-width: 768px) {
+      .form-card {
+        width: 90%;
+      }
+    }
   </style>
 </head>
 <body>
+
   <h2>Edit Club Profile</h2>
-  <form method="POST" action="/update-club-profile">
-    <textarea name="description" placeholder="Description" required></textarea>
-    <input type="email" name="contact_email" placeholder="Contact Email" />
-    <input type="url" name="logo_url" placeholder="Logo URL" />
-    <button type="submit">Update</button>
-  </form>
+
+  <!-- Edit Club Profile Form -->
+  <div class="form-card">
+    <form method="POST" action="/edit-club-profile">
+      <input type="text" name="club_name" placeholder="Club Name" required />
+      <input type="email" name="contact_email" placeholder="Contact Email" required />
+      <input type="url" name="website" placeholder="Website (optional)" />
+      <textarea name="description" placeholder="Description" rows="5" required></textarea>
+      <button type="submit">Save Changes</button>
+    </form>
+  </div>
+
 </body>
 </html>
