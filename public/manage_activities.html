@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Manage Activities</title>
+  <title>Manage Activities | CampusConnect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -11,168 +13,362 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #d0f0f2, #faffff);
-      padding: 40px 20px;
+      font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #0f0f0f, #1f1f1f);
+      color: #ffffff;
       min-height: 100vh;
+      padding: 0;
+    }
+
+    /* Navbar */
+    nav {
+      width: 100%;
+      padding: 16px 5%;
+      background: rgba(15, 15, 15, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #ff660050;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .nav-left .logo-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ff9800;
+      background: linear-gradient(to right, #ff9800, #ff6600);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-right .logout-btn {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 50px;
+      background: linear-gradient(to right, #ff4d4d, #ff7a18);
+      transition: all 0.3s ease;
+    }
+
+    .nav-right .logout-btn:hover {
+      background: linear-gradient(to right, #ff1a1a, #ff6600);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+    }
+
+    /* Main Content */
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 5%;
     }
 
     h2 {
       font-size: 2.2rem;
+      color: #ff6600;
       text-align: center;
-      color: #22666a;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
+    /* Form Card */
     .form-card {
-      background: #ffffff;
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0, 150, 150, 0.1);
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       max-width: 600px;
-      margin: 0 auto 40px;
+      margin: 0 auto 50px;
+      border: 1px solid #333;
     }
 
-    input[type="text"], input[type="url"] {
+    input[type="text"], 
+    input[type="url"],
+    textarea {
       width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
+      padding: 14px;
+      margin-bottom: 20px;
       border-radius: 10px;
-      border: 1px solid #ccc;
+      border: 1px solid #444;
       font-size: 1rem;
+      background-color: #2a2a2a;
+      color: #fff;
+      transition: border-color 0.3s ease;
     }
 
-    button {
-      padding: 12px 20px;
+    input[type="text"]:focus, 
+    input[type="url"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #ff6600;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 12px 24px;
       font-size: 1rem;
       border: none;
       border-radius: 10px;
-      background-color: #00bfc6;
-      color: #fff;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
+      font-weight: 600;
     }
 
-    button:hover {
-      background-color: #009ca6;
+    .btn-primary {
+      background: linear-gradient(to right, #7c3aed, #a855f7);
+      color: #fff;
     }
 
+    .btn-primary:hover {
+      background: linear-gradient(to right, #a855f7, #7c3aed);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+    }
+
+    .btn-danger {
+      background: linear-gradient(to right, #ff4d4d, #ff7a18);
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      background: linear-gradient(to right, #ff1a1a, #ff6600);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+    }
+
+    /* Activity List */
     .activity-list {
       max-width: 900px;
       margin: 0 auto;
-      display: grid;
-      gap: 20px;
     }
 
-    .activity-card {
-      background-color: #fff;
-      border-radius: 20px;
+    .activity-item {
+      background-color: #1a1a1a;
+      border-radius: 16px;
       padding: 25px;
-      box-shadow: 0 8px 20px rgba(0, 150, 150, 0.1);
-      position: relative;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      border: 1px solid #333;
+      transition: all 0.3s ease;
     }
 
-    .activity-card h3 {
-      color: #009ca6;
-      font-size: 1.4rem;
-      margin-bottom: 10px;
+    .activity-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(255, 115, 0, 0.15);
+      border-color: #ff6600;
     }
 
-    .activity-card p {
-      color: #333;
-      font-size: 1rem;
-      margin-bottom: 20px;
-    }
-
-    .activity-card .actions {
+    .activity-header {
       display: flex;
-      gap: 15px;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
     }
 
-    .actions form,
-    .actions button {
-      display: inline;
+    .activity-item h3 {
+      color: #ff9800;
+      font-size: 1.4rem;
+      margin: 0;
+      flex-grow: 1;
     }
 
+    .activity-date {
+      color: #aaa;
+      font-size: 0.9rem;
+      background: #2a2a2a;
+      padding: 5px 10px;
+      border-radius: 50px;
+      margin-left: 15px;
+    }
+
+    .activity-link {
+      color: #f97316;
+      text-decoration: none;
+      word-break: break-all;
+      display: inline-block;
+      margin-bottom: 15px;
+      transition: color 0.3s ease;
+    }
+
+    .activity-link:hover {
+      color: #ff9800;
+      text-decoration: underline;
+    }
+
+    .activity-item .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Edit Form */
     #edit-form {
       display: none;
+      background: #1a1a1a;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       max-width: 600px;
       margin: 40px auto;
-      background-color: #fff;
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 8px 20px rgba(0, 150, 150, 0.1);
+      border: 1px solid #ff6600;
     }
 
+    #edit-form h3 {
+      color: #ff9800;
+      font-size: 1.5rem;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
-      .activity-list {
-        grid-template-columns: 1fr;
+      .activity-header {
+        flex-direction: column;
       }
-    }
-
-    @media (min-width: 769px) {
-      .activity-list {
-        grid-template-columns: repeat(2, 1fr);
+      
+      .activity-date {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
       }
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+  <!-- Navbar -->
+  <nav>
+    <div class="nav-left">
+      <span class="logo-text">CampusConnect</span>
+    </div>
+    <div class="nav-right">
+      <a href="club_home.html" class="logout-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+  </nav>
 
-  <h2>Manage Activities</h2>
+  <!-- Main Content -->
+  <div class="main-content">
+    <h2>Manage Activities</h2>
 
-  <!-- Create Activity Form -->
-  <div class="form-card">
-    <form method="POST" action="/create-activity">
-      <input type="text" name="title" placeholder="Activity Title" required />
-      <input type="url" name="link" placeholder="Link (optional)" />
-      <button type="submit">Create Activity</button>
-    </form>
+    <!-- Create Activity Form -->
+    <div class="form-card">
+      <form method="POST" action="/create-activity">
+        <input type="text" name="title" placeholder="Activity Title" required />
+        <input type="url" name="link" placeholder="Link (optional)" />
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-plus"></i> Create Activity
+        </button>
+      </form>
+    </div>
+
+    <!-- Edit Activity Form -->
+    <div id="edit-form">
+      <h3>Edit Activity</h3>
+      <form id="edit-activity-form" method="POST" action="/edit-activity">
+        <input type="hidden" name="id" id="edit-id">
+        <input type="text" name="title" id="edit-title" placeholder="Activity Title" required />
+        <input type="url" name="link" id="edit-link" placeholder="Link (optional)" />
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <button type="button" onclick="closeEditForm()" class="btn btn-danger">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Activity List -->
+    <div class="activity-list" id="activity-list"></div>
   </div>
-
-  <!-- Edit Activity Form -->
-  <div id="edit-form">
-    <h3 style="margin-bottom: 20px; color: #22666a;">Edit Activity</h3>
-    <form id="edit-activity-form" method="POST" action="/edit-activity">
-      <input type="hidden" name="id" id="edit-id">
-      <input type="text" name="title" id="edit-title" placeholder="Activity Title" required />
-      <input type="url" name="link" id="edit-link" placeholder="Link (optional)" />
-      <div style="display: flex; gap: 10px;">
-        <button type="submit">Save Changes</button>
-        <button type="button" onclick="closeEditForm()" style="background-color: #ff4d4d;">Cancel</button>
-      </div>
-    </form>
-  </div>
-
-  <!-- Activity List -->
-  <div class="activity-list" id="activity-list"></div>
 
   <script>
     async function loadActivities() {
-      const res = await fetch('/api/club-activities');
-      const data = await res.json();
-      const container = document.getElementById('activity-list');
-      container.innerHTML = data.map(a => `
-        <div class="activity-card">
-          <h3>${a.title}</h3>
-          ${a.link ? `<a href="${a.link}" target="_blank">${a.link}</a><br>` : ''}
-          <div class="actions">
-            <button onclick="openEditForm(${a.id}, \`${a.title.replace(/`/g, '\\`')}\`, \`${(a.link || '').replace(/`/g, '\\`')}\`)">Edit</button>
-            <form method="POST" action="/delete-activity">
-              <input type="hidden" name="id" value="${a.id}" />
-              <button type="submit" style="background-color: #ff4d4d;">Delete</button>
-            </form>
+      try {
+        const res = await fetch('/api/club-activities');
+        const data = await res.json();
+        const container = document.getElementById('activity-list');
+        
+        // Reverse the array to show latest first and format dates
+        const activities = [...data].reverse().map(activity => {
+          const date = new Date(activity.created_at || activity.date_created);
+          return {
+            ...activity,
+            formattedDate: date.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            }),
+            datetime: date.toISOString()
+          };
+        });
+        
+        container.innerHTML = activities.map(a => `
+          <div class="activity-item">
+            <div class="activity-header">
+              <h3>${a.title}</h3>
+              <time class="activity-date" datetime="${a.datetime}">${a.formattedDate}</time>
+            </div>
+            ${a.link ? `<a href="${a.link}" target="_blank" class="activity-link">
+              <i class="fas fa-link"></i> ${a.link}
+            </a>` : ''}
+            <div class="actions">
+              <button onclick="openEditForm(${a.id}, \`${a.title.replace(/`/g, '\\`')}\`, \`${(a.link || '').replace(/`/g, '\\`')}\`)" 
+                class="btn btn-primary">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <form method="POST" action="/delete-activity">
+                <input type="hidden" name="id" value="${a.id}" />
+                <button type="submit" class="btn btn-danger">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `).join('');
+      } catch (error) {
+        console.error('Error loading activities:', error);
+        document.getElementById('activity-list').innerHTML = `
+          <div class="activity-item" style="color: #ff4d4d;">
+            Error loading activities. Please try again later.
+          </div>
+        `;
+      }
     }
-
-    loadActivities();
 
     function openEditForm(id, title, link) {
       document.getElementById('edit-id').value = id;
       document.getElementById('edit-title').value = title;
-      document.getElementById('edit-link').value = link;
+      document.getElementById('edit-link').value = link || '';
       document.getElementById('edit-form').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -180,7 +376,9 @@
     function closeEditForm() {
       document.getElementById('edit-form').style.display = 'none';
     }
-  </script>
 
+    // Load activities when page loads
+    document.addEventListener('DOMContentLoaded', loadActivities);
+  </script>
 </body>
 </html>

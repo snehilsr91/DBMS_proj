@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Performance Analytics</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary-color: #22666a;
+      --secondary-color: #00bfc6;
+      --light-bg: #f8f9fa;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      padding-top: 20px;
+    }
+    
+    .card {
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      margin-bottom: 1.5rem;
+      border: none;
+      transition: all 0.3s ease;
+    }
+    
+    .card-header {
+      background-color: white;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    .badge-technical {
+      background-color: #4e73df;
+    }
+    
+    .badge-hr {
+      background-color: #1cc88a;
+    }
+    
+    .badge-beginner {
+      background-color: #6c757d;
+    }
+    
+    .badge-intermediate {
+      background-color: #0dcaf0;
+    }
+    
+    .badge-advanced {
+      background-color: #198754;
+    }
+    
+    .club-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 10px;
+    }
+    
+    .hover-effect:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #6c757d;
+    }
+    
+    .empty-state i {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #adb5bd;
+    }
+    
+    #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255,255,255,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .student-info-header {
+      background: linear-gradient(135deg, #d0f0f2, #faffff);
+      padding: 1.5rem 0;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #c4f1f3;
+    }
+    
+    .spinner-container {
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .nav-pills .nav-link.active {
+      background-color: var(--secondary-color);
+    }
+
+    /* Chart optimizations */
+    .chart-container {
+      position: relative;
+      height: 250px;
+      width: 100%;
+    }
+    
+    .card-body {
+      padding: 1rem;
+    }
+
+    .proficiency-btn {
+      transition: all 0.2s ease;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay">
+    <div class="text-center">
+      <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+      <h4 class="mt-3">Loading Dashboard...</h4>
+    </div>
+  </div>
+
+  <!-- Student Info Header -->
+  <div class="student-info-header">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h1 class="display-5 fw-bold" id="studentName">Loading...</h1>
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <span class="badge bg-secondary" id="studentUsn">USN</span>
+            <span class="badge bg-primary" id="studentBranch">Branch</span>
+          </div>
+          <div id="clubBadges">
+            <span class="badge bg-light text-dark">
+              <span class="spinner-border spinner-border-sm me-1"></span>
+              Loading clubs...
+            </span>
+          </div>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <button id="refreshBtn" class="btn btn-primary">
+            <i class="bi bi-arrow-clockwise"></i> Refresh Data
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container py-4">
+    <!-- Error Alert Container -->
+    <div id="errorAlertContainer"></div>
+
+    <!-- First Row - Stats and Clubs -->
+    <div class="row mb-4">
+      <!-- Test Stats -->
+      <div class="col-md-8">
+        <div class="card hover-effect h-100">
+          <div class="card-header">
+            <h3 class="mb-0">Test Performance Overview</h3>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-md-3">
+                <h6 class="text-muted">Total Tests</h6>
+                <h2 id="totalTests">-</h2>
+              </div>
+              <div class="col-md-3">
+                <h6 class="text-muted">Avg Score</h6>
+                <h2 id="avgScore">-</h2>
+              </div>
+              <div class="col-md-3">
+                <h6 class="text-muted">Best Score</h6>
+                <h2 id="bestScore">-</h2>
+              </div>
+              <div class="col-md-3">
+                <h6 class="text-muted">Improvement</h6>
+                <h2 id="improvement">-</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Club Memberships -->
+      <div class="col-md-4">
+        <div class="card hover-effect h-100">
+          <div class="card-header">
+            <h3 class="mb-0">Club Memberships</h3>
+          </div>
+          <div class="card-body" id="clubsContainer">
+            <div class="spinner-container">
+              <div class="spinner-border text-primary"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Second Row - Charts -->
+    <div class="row mb-4">
+      <!-- Score Trend Chart -->
+      <div class="col-lg-8">
+        <div class="card hover-effect h-100">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Score Trend Over Time</span>
+            <div>
+              <ul class="nav nav-pills">
+                <li class="nav-item">
+                  <a class="nav-link active" href="#" data-type="all">All</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#" data-type="technical">Technical</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#" data-type="hr">HR</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="scoreTrendChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Progress Report (replaces Test Type Comparison) -->
+      <div class="col-lg-4">
+        <div class="card hover-effect h-100">
+          <div class="card-header">
+            Proficiency Progress
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="proficiencyChart"></canvas>
+            </div>
+            <div class="mt-3">
+              <div class="d-flex justify-content-between flex-wrap">
+                <span class="badge bg-dark mb-1">Beginner: <span id="beginnerCount">0</span></span>
+                <span class="badge bg-info mb-1">Intermediate: <span id="intermediateCount">0</span></span>
+                <span class="badge bg-success mb-1">Advanced: <span id="advancedCount">0</span></span>
+                <span class="badge bg-secondary mb-1">Not Rated: <span id="unratedCount">0</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Third Row - Subject Proficiency -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card hover-effect">
+          <div class="card-header">
+            <h3 class="mb-0">Subject Proficiency</h3>
+            <p class="mb-0 text-muted">Click to set or change your proficiency level</p>
+          </div>
+          <div class="card-body">
+            <div id="subjectProficiencyContainer">
+              <div class="spinner-container">
+                <div class="spinner-border text-primary"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fourth Row - Test History -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card hover-effect">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Test History</h3>
+            <div class="dropdown">
+              <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
+                      id="testHistoryFilter" data-bs-toggle="dropdown">
+                <i class="bi bi-filter"></i> Filter
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item filter-history" href="#" data-type="all">All Tests</a></li>
+                <li><a class="dropdown-item filter-history" href="#" data-type="technical">Technical Only</a></li>
+                <li><a class="dropdown-item filter-history" href="#" data-type="hr">HR Only</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Score</th>
+                    <th>Correct</th>
+                    <th>Total</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody id="testHistoryBody">
+                  <tr>
+                    <td colspan="6" class="text-center py-4">
+                      <div class="spinner-border text-primary"></div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Global variables
+    let scoreTrendChart;
+    let proficiencyChart;
+    let currentAnalyticsData;
+    let allTestHistory = [];
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      fetchStudentProfile();
+      
+      // Setup refresh button
+      document.getElementById('refreshBtn').addEventListener('click', function() {
+        fetchStudentProfile();
+      });
+
+      // Debounced resize handler for charts
+      let resizeTimer;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+          if (scoreTrendChart) scoreTrendChart.resize();
+          if (proficiencyChart) proficiencyChart.resize();
+        }, 250);
+      });
+    });
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(unsafe) {
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Show error message
+    function showError(message) {
+      const container = document.getElementById('errorAlertContainer');
+      container.innerHTML = `
+        <div class="alert alert-danger alert-dismissible fade show mb-4">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          ${escapeHtml(message)}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      `;
+    }
+
+    // Fetch student profile data
+    async function fetchStudentProfile() {
+      try {
+        console.log('[API] Fetching student profile');
+        document.getElementById('loadingOverlay').style.display = 'flex';
+        
+        const response = await fetch('/api/student-profile', {
+          credentials: 'include'
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to fetch profile data');
+        }
+        
+        const data = await response.json();
+        console.log('[API] Received data:', data);
+        
+        updateProfileUI(data.student, data.clubs);
+        updateAnalyticsUI(data.analytics, data.subjects);
+        updateSubjectProficiencyUI(data.subjects);
+        
+      } catch (error) {
+        console.error('[API] Error:', error);
+        if (error.message.includes('Unauthorized')) {
+          window.location.href = '/student-login';
+        } else {
+          showError(error.message || 'Failed to load profile data');
+        }
+      } finally {
+        document.getElementById('loadingOverlay').style.display = 'none';
+      }
+    }
+
+    // Update profile section
+    function updateProfileUI(student, clubs) {
+      console.log('[UI] Updating profile section');
+      
+      // Update basic profile info
+      document.getElementById('studentName').textContent = student?.name ? escapeHtml(student.name) : 'User';
+      document.getElementById('studentUsn').textContent = student?.usn ? escapeHtml(student.usn) : 'N/A';
+      document.getElementById('studentBranch').textContent = student?.branch ? escapeHtml(student.branch) : 'N/A';
+      
+      // Update club memberships
+      const clubsContainer = document.getElementById('clubsContainer');
+      const clubBadges = document.getElementById('clubBadges');
+      
+      if (!clubs || clubs.length === 0) {
+        clubsContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="bi bi-people"></i>
+            <h5>No Club Memberships</h5>
+            <p>Join clubs to see them listed here</p>
+          </div>
+        `;
+        clubBadges.innerHTML = '<span class="badge bg-secondary">No club memberships</span>';
+      } else {
+        clubsContainer.innerHTML = `
+          <div class="list-group list-group-flush">
+            ${clubs.map(club => `
+              <div class="list-group-item border-0">
+                <div class="d-flex align-items-center">
+                  <img src="${escapeHtml(club.logo_url || 'https://via.placeholder.com/40')}" 
+                       class="club-logo" alt="${escapeHtml(club.name)}">
+                  <div>
+                    <h6 class="mb-0">${escapeHtml(club.name)}</h6>
+                    <small class="text-muted">${escapeHtml(club.role || 'Member')}</small>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        
+        clubBadges.innerHTML = clubs.map(club => `
+          <span class="badge bg-light text-dark me-1">
+            <img src="${escapeHtml(club.logo_url || 'https://via.placeholder.com/20')}" 
+                 width="16" height="16" class="rounded-circle me-1">
+            ${escapeHtml(club.name)} (${escapeHtml(club.role || 'Member')})
+          </span>
+        `).join('');
+      }
+    }
+
+    // Update analytics section
+    function updateAnalyticsUI(analytics, subjects) {
+      console.log('[UI] Updating analytics section');
+      currentAnalyticsData = analytics;
+      allTestHistory = analytics.testHistory;
+      
+      // Update stats cards
+      document.getElementById('totalTests').textContent = analytics.totalTests;
+      document.getElementById('avgScore').textContent = analytics.totalTests > 0 
+        ? `${analytics.averageScore.toFixed(1)}%` 
+        : 'N/A';
+      document.getElementById('bestScore').textContent = analytics.totalTests > 0 
+        ? `${analytics.bestScore}%` 
+        : 'N/A';
+      
+      // Calculate improvement
+      let improvement = 0;
+      if (analytics.testHistory.length >= 2) {
+        const firstScore = analytics.testHistory[analytics.testHistory.length - 1].score;
+        const lastScore = analytics.testHistory[0].score;
+        improvement = ((lastScore - firstScore) / firstScore * 100).toFixed(1);
+      }
+      document.getElementById('improvement').textContent = analytics.totalTests >= 2 
+        ? `${improvement}%` 
+        : 'N/A';
+      
+      // Create or update charts
+      createScoreTrendChart(analytics.testHistory);
+      updateProgressReport(subjects);
+      
+      // Populate test history table
+      updateTestHistoryTable(analytics.testHistory);
+      
+      // Setup chart filter buttons
+      document.querySelectorAll('[data-type]').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          const type = this.getAttribute('data-type');
+          
+          // Update active tab
+          document.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          // Filter data
+          const filteredData = type === 'all' 
+            ? allTestHistory 
+            : allTestHistory.filter(t => t.test_type === type);
+          
+          updateScoreTrendChart(filteredData);
+        });
+      });
+      
+      // Setup test history filter
+      document.querySelectorAll('.filter-history').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          const type = this.getAttribute('data-type');
+          const filteredData = type === 'all' 
+            ? allTestHistory 
+            : allTestHistory.filter(t => t.test_type === type);
+          updateTestHistoryTable(filteredData);
+        });
+      });
+    }
+
+    // Create score trend chart
+    function createScoreTrendChart(testHistory) {
+      console.log('[UI] Creating score trend chart');
+      const ctx = document.getElementById('scoreTrendChart').getContext('2d');
+      
+      // Destroy previous chart if exists
+      if (scoreTrendChart) {
+        scoreTrendChart.destroy();
+      }
+      
+      // Sort by date ascending for chart
+      const sortedHistory = [...testHistory].sort((a, b) => 
+        new Date(a.timestamp) - new Date(b.timestamp)
+      );
+      
+      scoreTrendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: sortedHistory.map(test => new Date(test.timestamp).toLocaleDateString()),
+          datasets: [{
+            label: 'Test Scores',
+            data: sortedHistory.map(test => test.score),
+            borderColor: '#00bfc6',
+            backgroundColor: 'rgba(0, 191, 198, 0.1)',
+            tension: 0.3,
+            fill: true,
+            pointBackgroundColor: '#00bfc6',
+            pointRadius: 3,
+            pointHoverRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {
+            duration: 1000
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const test = sortedHistory[context.dataIndex];
+                  return [
+                    `Score: ${test.score}%`,
+                    `Correct: ${test.correct_answers}/${test.attempted_questions}`,
+                    `Type: ${test.test_type}`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: false,
+              min: 0,
+              max: 100,
+              ticks: {
+                callback: function(value) {
+                  return value + '%';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Update progress report
+    function updateProgressReport(subjects) {
+      if (!subjects || subjects.length === 0) return;
+
+      // Count proficiency levels
+      const counts = {
+        beginner: 0,
+        intermediate: 0,
+        advanced: 0,
+        unrated: 0
+      };
+
+      subjects.forEach(subject => {
+        if (!subject.proficiency) counts.unrated++;
+        else counts[subject.proficiency]++;
+      });
+
+      // Update counters
+      document.getElementById('beginnerCount').textContent = counts.beginner;
+      document.getElementById('intermediateCount').textContent = counts.intermediate;
+      document.getElementById('advancedCount').textContent = counts.advanced;
+      document.getElementById('unratedCount').textContent = counts.unrated;
+
+      // Update chart
+      const ctx = document.getElementById('proficiencyChart').getContext('2d');
+      
+      if (proficiencyChart) {
+        proficiencyChart.destroy();
+      }
+
+      proficiencyChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Beginner', 'Intermediate', 'Advanced', 'Not Rated'],
+          datasets: [{
+            data: [counts.beginner, counts.intermediate, counts.advanced, counts.unrated],
+            backgroundColor: [
+              '#6c757d',
+              '#0dcaf0',
+              '#198754',
+              '#adb5bd'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const value = context.raw;
+                  const percentage = Math.round((value / total) * 100);
+                  return `${context.label}: ${value} (${percentage}%)`;
+                }
+              }
+            }
+          },
+          cutout: '70%'
+        }
+      });
+    }
+
+    // Update test history table
+    function updateTestHistoryTable(testHistory) {
+      console.log('[UI] Updating test history table');
+      const tbody = document.getElementById('testHistoryBody');
+      
+      if (!testHistory || testHistory.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center py-4">
+              <div class="empty-state">
+                <i class="bi bi-clipboard-x"></i>
+                <h5>No Test History Found</h5>
+                <p>Take some mock tests to see them listed here</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      // Sort by date descending for table
+      const sortedHistory = [...testHistory].sort((a, b) => 
+        new Date(b.timestamp) - new Date(a.timestamp)
+      );
+      
+      tbody.innerHTML = sortedHistory.map(test => `
+        <tr>
+          <td>${new Date(test.timestamp).toLocaleDateString()}</td>
+          <td>
+            <span class="badge ${test.test_type === 'technical' ? 'badge-technical' : 'badge-hr'}">
+              ${escapeHtml(test.test_type)}
+            </span>
+          </td>
+          <td><strong>${test.score}%</strong></td>
+          <td>${test.correct_answers}/${test.attempted_questions}</td>
+          <td>${test.total_questions}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary view-test-btn" data-test-id="${test.id}">
+              <i class="bi bi-eye"></i> View
+            </button>
+          </td>
+        </tr>
+      `).join('');
+      
+      // Add event listeners to view buttons
+      document.querySelectorAll('.view-test-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const testId = this.getAttribute('data-test-id');
+          viewTestDetails(testId);
+        });
+      });
+    }
+
+    // View test details
+    function viewTestDetails(testId) {
+      const test = allTestHistory.find(t => t.id == testId);
+      if (test) {
+        alert(`Test Details:\n\n` +
+              `Type: ${test.test_type}\n` +
+              `Score: ${test.score}%\n` +
+              `Correct Answers: ${test.correct_answers}/${test.attempted_questions}\n` +
+              `Date: ${new Date(test.timestamp).toLocaleString()}`);
+      }
+    }
+
+    // Update subject proficiency section
+    function updateSubjectProficiencyUI(subjects) {
+      const container = document.getElementById('subjectProficiencyContainer');
+      
+      if (!subjects || subjects.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="bi bi-book"></i>
+            <h5>No Subjects Found</h5>
+            <p>No subjects available for your branch</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="row">
+          ${subjects.map(subject => `
+            <div class="col-md-6 mb-3">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">${escapeHtml(subject.name)}</h5>
+                  <div class="btn-group w-100" role="group">
+                    <button type="button" 
+                      class="btn ${subject.proficiency === 'beginner' ? 'btn-dark' : 'btn-outline-dark'} proficiency-btn"
+                      data-subject-id="${subject.id}" data-level="beginner">
+                      Beginner
+                    </button>
+                    <button type="button" 
+                      class="btn ${subject.proficiency === 'intermediate' ? 'btn-info' : 'btn-outline-info'} proficiency-btn"
+                      data-subject-id="${subject.id}" data-level="intermediate">
+                      Intermediate
+                    </button>
+                    <button type="button" 
+                      class="btn ${subject.proficiency === 'advanced' ? 'btn-success' : 'btn-outline-success'} proficiency-btn"
+                      data-subject-id="${subject.id}" data-level="advanced">
+                      Advanced
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      // Add event listeners to proficiency buttons
+      document.querySelectorAll('.proficiency-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const subjectId = this.dataset.subjectId;
+            const level = this.dataset.level;
+            const isCurrentlySelected = this.classList.contains('btn-dark') || 
+                                    this.classList.contains('btn-info') || 
+                                    this.classList.contains('btn-success');
+            
+            // Determine the new proficiency level (null if deselecting)
+            const newProficiency = isCurrentlySelected ? null : level;
+
+            try {
+            // Optimistic UI update
+            const buttons = document.querySelectorAll(`[data-subject-id="${subjectId}"]`);
+            buttons.forEach(btn => {
+                const btnLevel = btn.dataset.level;
+                btn.classList.remove('btn-dark', 'btn-info', 'btn-success');
+                btn.classList.add(`btn-outline-${getLevelColor(btnLevel)}`);
+                
+                // If this is the clicked button and we're selecting (not deselecting)
+                if (btn === this && !isCurrentlySelected) {
+                btn.classList.remove(`btn-outline-${getLevelColor(btnLevel)}`);
+                btn.classList.add(`btn-${getLevelColor(btnLevel)}`);
+                }
+            });
+
+            // Send update to server
+            const response = await fetch('/api/update-proficiency', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                subject_id: subjectId, 
+                proficiency: newProficiency 
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Update failed');
+            }
+            
+            // Refresh the data to ensure consistency
+            fetchStudentProfile();
+            
+            } catch (error) {
+            console.error('Error updating proficiency:', error);
+            // Revert UI by refreshing from server
+            fetchStudentProfile();
+            }
+        });
+        });
+    }
+
+    function getLevelColor(level) {
+      switch(level) {
+        case 'beginner': return 'dark';
+        case 'intermediate': return 'info';
+        case 'advanced': return 'success';
+        default: return 'secondary';
+      }
+    }
+  </script>
+</body>
+</html>

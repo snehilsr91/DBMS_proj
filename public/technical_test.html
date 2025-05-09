@@ -2,25 +2,128 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Technical Test</title>
+  <title>Technical Test | CampusConnect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #d0f0f2, #faffff);
-      padding: 40px;
+      font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #0f0f0f, #1f1f1f);
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* Navbar */
+    nav {
+      width: 100%;
+      padding: 16px 5%;
+      background: rgba(15, 15, 15, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #ff660050;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .nav-left .logo-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ff9800;
+      background: linear-gradient(to right, #ff9800, #ff6600);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Fixed Header */
+    #fixed-header {
+      position: fixed;
+      top: 80px;
+      left: 0;
+      right: 0;
+      background: rgba(26, 26, 26, 0.95);
+      padding: 20px 5%;
+      z-index: 999;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
       display: flex;
       flex-direction: column;
       align-items: center;
+      border-bottom: 1px solid #333;
     }
 
-    h2 {
-      color: #22666a;
-      font-size: 2.2rem;
-      margin-bottom: 30px;
+    #fixed-header h2 {
+      color: #ff9800;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    #test-header {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 15px;
+    }
+
+    #timer {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #ff4d4d;
+      background: #2a2a2a;
+      padding: 10px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #progress-container {
+      width: 100%;
+      max-width: 900px;
+      background: #2a2a2a;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      height: 12px;
+      overflow: hidden;
+    }
+
+    #progress-bar {
+      height: 100%;
+      background: linear-gradient(to right, #7c3aed, #a855f7);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    #progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: #ddd;
+      font-weight: 600;
+    }
+
+    /* Main Content */
+    .main-content {
+      max-width: 900px;
+      margin: 200px auto 60px;
+      padding: 0 5%;
     }
 
     #questions {
-      max-width: 900px;
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -28,105 +131,361 @@
     }
 
     .question {
-      background: #ffffff;
-      padding: 25px 30px;
-      border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(0, 180, 180, 0.15);
-      border: 1px solid #c4f1f3;
-      color: #22666a;
+      background: #1a1a1a;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      border: 1px solid #333;
+      color: #ddd;
       font-size: 1.1rem;
     }
 
     .question p {
       font-weight: bold;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       font-size: 1.2rem;
-      color: #009ca6;
+      color: #ff9800;
     }
 
     .question label {
       display: block;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       cursor: pointer;
-      color: #4a7d80;
+      color: #ccc;
+      padding: 10px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .question label:hover {
+      background: rgba(255, 152, 0, 0.1);
     }
 
     .question input[type="radio"] {
-      margin-right: 8px;
+      margin-right: 12px;
+      accent-color: #ff9800;
+      transform: scale(1.2);
+    }
+
+    /* Submit Container */
+    #submit-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin: 40px 0;
+    }
+
+    #answered-count {
+      font-size: 1.1rem;
+      color: #ddd;
+      font-weight: 600;
     }
 
     button {
-      margin-top: 40px;
       padding: 15px 40px;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: white;
-      background-color: #00bfc6;
+      background: linear-gradient(to right, #7c3aed, #a855f7);
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease;
+      transition: all 0.3s ease;
+      font-weight: 600;
     }
 
     button:hover {
-      background-color: #009ca6;
-      transform: scale(1.05);
+      background: linear-gradient(to right, #a855f7, #7c3aed);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
     }
 
+    /* Exit Warning Modal */
+    #exit-warning {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    #exit-warning-content {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+      border: 1px solid #333;
+    }
+    
+    #exit-warning h3 {
+      color: #ff4d4d;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    
+    #exit-warning p {
+      color: #ddd;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+    
+    .exit-warning-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    
+    .exit-warning-btn {
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    
+    #exit-confirm {
+      background: linear-gradient(to right, #ff4d4d, #ff7a18);
+      color: white;
+    }
+    
+    #exit-cancel {
+      background: linear-gradient(to right, #3a3a3a, #2a2a2a);
+      color: white;
+    }
+    
+    #exit-confirm:hover {
+      background: linear-gradient(to right, #ff1a1a, #ff6600);
+    }
+    
+    #exit-cancel:hover {
+      background: linear-gradient(to right, #2a2a2a, #1a1a1a);
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
-      body {
-        padding: 20px;
+      #fixed-header {
+        top: 70px;
+        padding: 15px 5%;
       }
 
-      h2 {
-        font-size: 1.8rem;
+      #fixed-header h2 {
+        font-size: 1.5rem;
+      }
+
+      #timer {
+        font-size: 1.1rem;
+        padding: 8px 15px;
+      }
+
+      .main-content {
+        margin-top: 180px;
       }
 
       .question {
         padding: 20px;
       }
+
+      #submit-container {
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .exit-warning-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <h2>Technical Mock Test</h2>
-  <div id="questions"></div>
-  <button onclick="submitTest()">Submit Test</button>
+  <!-- Navbar -->
+  <nav>
+    <div class="nav-left">
+      <span class="logo-text">CampusConnect</span>
+    </div>
+  </nav>
+
+  <!-- Fixed Header -->
+  <div id="fixed-header">
+    <h2>Technical Mock Test</h2>
+    <div id="test-header">
+      <div id="timer">Time Left: Loading...</div>
+    </div>
+    <div id="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+    <div id="progress-text">0/20 questions answered</div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div id="questions">Loading questions...</div>
+    
+    <div id="submit-container">
+      <div id="answered-count"></div>
+      <button onclick="submitTest()">Submit Test</button>
+    </div>
+  </div>
+
+  <!-- Exit Warning Modal -->
+  <div id="exit-warning">
+    <div id="exit-warning-content">
+      <h3>Warning: Test In Progress</h3>
+      <p>If you leave this page, your test will be submitted automatically with your current answers. Any unanswered questions will be marked as incorrect.</p>
+      <div class="exit-warning-buttons">
+        <button id="exit-confirm" class="exit-warning-btn">Leave Page</button>
+        <button id="exit-cancel" class="exit-warning-btn">Continue Test</button>
+      </div>
+    </div>
+  </div>
 
   <script>
+    // Your existing script remains exactly the same
+    // Global variables
     let questions = [];
     let answers = {};
+    let timeLeft;
+    let timerInterval;
+    let totalQuestions = 20; // Default, will be updated from sessionStorage
+    let testSubmitted = false;
+    let warnedAboutUnload = false;
+    let testStartTime;
 
-    fetch('/start-test?testType=technical')
-      .then(res => res.json())
-      .then(data => {
-        questions = data;
-        const container = document.getElementById('questions');
-        data.forEach((q, i) => {
-          const qDiv = document.createElement('div');
-          qDiv.className = 'question';
-          qDiv.innerHTML = `
-            <p>Q${i + 1}: ${q.question_text}</p>
-            ${['option_A', 'option_B', 'option_C', 'option_D'].map(opt => `
-              <label><input type="radio" name="q${i}" value="${opt}"> ${q[opt]}</label>
-            `).join('')}
+    // Initialize the test
+    function initializeTest() {
+      // Check if test was already submitted
+      if (sessionStorage.getItem('test-submitted') === 'true') {
+        sessionStorage.removeItem('test-submitted');
+        window.location.href = '/mock-tests'; // Redirect to test selection
+        return;
+      }
+
+      // Get question count from session storage (set from mock_test.html)
+      const questionCount = sessionStorage.getItem('technical-question-count');
+      if (questionCount) {
+        totalQuestions = parseInt(questionCount);
+      }
+
+      // Always start fresh - no restoring previous state
+      startNewTest();
+      loadQuestions();
+
+      // Start timer
+      timerInterval = setInterval(updateTimer, 1000);
+
+      // Replace history to prevent back navigation
+      history.replaceState(null, null, window.location.href);
+    }
+
+    function startNewTest() {
+      // Calculate time based on selected questions (30 seconds per question)
+      timeLeft = totalQuestions * 30;
+      testStartTime = Date.now();
+      answers = {};
+      
+      // Initialize UI
+      updateTimerDisplay();
+      updateProgress();
+    }
+
+    function updateTimer() {
+      timeLeft--;
+      
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        autoSubmitTest();
+        return;
+      }
+
+      updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      document.getElementById('timer').textContent = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+    function updateProgress() {
+      const answeredCount = Object.keys(answers).length;
+      const percentage = (answeredCount / totalQuestions) * 100;
+      document.getElementById('progress-bar').style.width = `${percentage}%`;
+      document.getElementById('progress-text').textContent = `${answeredCount}/${totalQuestions} questions answered`;
+      document.getElementById('answered-count').textContent = `Answered: ${answeredCount}/${totalQuestions}`;
+    }
+
+    function loadQuestions() {
+      fetch(`/start-test?testType=technical&count=${totalQuestions}`)
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to load questions');
+          return res.json();
+        })
+        .then(data => {
+          questions = data;
+          renderQuestions();
+          updateProgress();
+        })
+        .catch(err => {
+          console.error('Error loading questions:', err);
+          document.getElementById('questions').innerHTML = `
+            <div class="question">
+              <p>Error loading questions. Please try refreshing the page.</p>
+            </div>
           `;
-          container.appendChild(qDiv);
         });
-      });
+    }
 
-    function submitTest() {
+    function renderQuestions() {
+      const container = document.getElementById('questions');
+      container.innerHTML = '';
+      
+      questions.forEach((q, i) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'question';
+        qDiv.innerHTML = `
+          <p>Q${i + 1}: ${q.question_text}</p>
+          ${['option_A', 'option_B', 'option_C', 'option_D'].map(opt => `
+            <label>
+              <input type="radio" name="q${i}" value="${opt}" onchange="handleAnswerChange(${i}, '${opt}')">
+              ${q[opt]}
+            </label>
+          `).join('')}
+        `;
+        container.appendChild(qDiv);
+      });
+    }
+
+    function handleAnswerChange(questionNum, option) {
+      answers[questionNum] = option;
+      updateProgress();
+    }
+
+    function autoSubmitTest() {
+      if (testSubmitted) return;
+      testSubmitted = true;
+      
+      clearInterval(timerInterval);
+      sessionStorage.setItem('test-submitted', 'true');
+      
       const responses = [];
+      let attempted = 0;
 
       for (let i = 0; i < questions.length; i++) {
-        const selected = document.querySelector(`input[name="q${i}"]:checked`);
-        if (!selected) {
-          alert(`Please answer Question ${i + 1}`);
-          return;
-        }
+        const selected = answers[i];
         responses.push({
           question_id: questions[i].id,
-          selected: selected.value
+          selected: selected || null // Include null for unanswered questions
         });
+        if (selected) attempted++;
       }
 
       fetch('/submit-answers', {
@@ -134,15 +493,106 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           testType: 'technical',
-          answers: responses
+          answers: responses,
+          totalQuestions: totalQuestions
         })
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
       .then(data => {
+        if (data.error) throw new Error(data.error);
         window.location.href = `/result?id=${data.resultId}`;
       })
-      .catch(err => alert('An error occurred while submitting your answers.'));
+      .catch(err => {
+        console.error('Error:', err);
+        window.location.href = '/student-home';
+      });
     }
+
+    function submitTest() {
+      if (testSubmitted) return;
+      testSubmitted = true;
+      
+      clearInterval(timerInterval);
+      sessionStorage.setItem('test-submitted', 'true');
+      
+      const responses = [];
+      let attempted = 0;
+
+      for (let i = 0; i < questions.length; i++) {
+        const selected = answers[i];
+        responses.push({
+          question_id: questions[i].id,
+          selected: selected || null
+        });
+        if (selected) attempted++;
+      }
+
+      fetch('/submit-answers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          testType: 'technical',
+          answers: responses,
+          totalQuestions: totalQuestions
+        })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then(data => {
+        if (data.error) throw new Error(data.error);
+        window.location.href = `/result?id=${data.resultId}`;
+      })
+      .catch(err => {
+        console.error('Error:', err);
+        alert(`Error submitting test: ${err.message}`);
+      });
+    }
+
+    // Enhanced Page Leave Protection
+    window.addEventListener('beforeunload', function(e) {
+      if (testSubmitted) return;
+      
+      if (timeLeft <= 0) {
+        return;
+      }
+      
+      if (!warnedAboutUnload) {
+        e.preventDefault();
+        // Show custom warning message
+        const leave = confirm('Warning: If you leave this page, your test will be automatically submitted and you won\'t be able to retake it. Are you sure you want to leave?');
+        
+        if (leave) {
+          // User confirmed they want to leave - submit answers
+          autoSubmitTest();
+        } else {
+          // User chose to stay on the page
+          warnedAboutUnload = false;
+          return;
+        }
+      }
+    });
+
+    // Prevent back button after submission
+    window.addEventListener('popstate', function(event) {
+      if (sessionStorage.getItem('test-submitted')) {
+        window.location.href = '/mock-tests';
+      }
+    });
+
+    // Start the test
+    document.addEventListener('DOMContentLoaded', function() {
+      // Clear any previous test state
+      sessionStorage.removeItem('technical-test-state');
+      
+      // Replace current history entry
+      history.replaceState(null, null, window.location.href);
+      initializeTest();
+    });
   </script>
 </body>
 </html>

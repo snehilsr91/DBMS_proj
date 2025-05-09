@@ -1,83 +1,444 @@
-<!-- public/result.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Test Result</title>
+  <title>Test Result | CampusConnect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #d0f0f2, #faffff);
-      padding: 40px;
+      font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #0f0f0f, #1f1f1f);
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 40px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    .result-card {
-      background: #ffffff;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 15px 35px rgba(0, 180, 180, 0.2);
-      max-width: 600px;
+    /* Navbar */
+    nav {
       width: 100%;
-      text-align: center;
-      color: #22666a;
+      padding: 16px 5%;
+      background: rgba(15, 15, 15, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      position: fixed;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #ff660050;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .nav-left .logo-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ff9800;
+      background: linear-gradient(to right, #ff9800, #ff6600);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Result Card */
+    .result-card {
+      background: #1a1a1a;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      max-width: 900px;
+      width: 100%;
+      margin-top: 80px;
+      border: 1px solid #333;
     }
 
     h2 {
       font-size: 2rem;
-      color: #009ca6;
-      margin-bottom: 20px;
+      color: #ff9800;
+      margin-bottom: 30px;
+      text-align: center;
     }
 
-    p {
-      font-size: 1.2rem;
-      margin: 10px 0;
-      color: #4a7d80;
+    /* Summary Section */
+    .summary-section {
+      text-align: center;
+      margin-bottom: 40px;
     }
 
-    a {
-      margin-top: 30px;
-      display: inline-block;
-      padding: 12px 30px;
-      background-color: #00bfc6;
+    .score-circle {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: linear-gradient(to right, #7c3aed, #a855f7);
       color: white;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: background-color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 30px;
+      box-shadow: 0 8px 25px rgba(168, 85, 247, 0.3);
     }
 
-    a:hover {
-      background-color: #009ca6;
+    .score-percentage {
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+
+    .result-item {
+      font-size: 1.2rem;
+      margin: 20px 0;
+      color: #ddd;
+      display: flex;
+      justify-content: space-between;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #333;
+    }
+
+    .result-label {
+      font-weight: 600;
+      color: #ff9800;
+    }
+
+    /* Questions Container */
+    .questions-container {
+      margin-top: 40px;
+    }
+
+    .questions-title {
+      color: #ff9800;
+      font-size: 1.5rem;
+      margin-bottom: 25px;
+      text-align: center;
+      border-bottom: 2px solid #333;
+      padding-bottom: 10px;
+    }
+
+    /* Question Result */
+    .question-result {
+      background: #2a2a2a;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      border-left: 5px solid #a855f7;
+    }
+
+    .question-result.correct {
+      border-left-color: #10b981;
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    .question-result.incorrect {
+      border-left-color: #ef4444;
+      background-color: rgba(239, 68, 68, 0.1);
+    }
+
+    .question-result.unanswered {
+      border-left-color: #6b7280;
+      background-color: rgba(107, 114, 128, 0.1);
+    }
+
+    .question-text {
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #ddd;
+      font-size: 1.1rem;
+    }
+
+    .option {
+      padding: 12px 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background-color: #1a1a1a;
+      transition: all 0.2s ease;
+    }
+
+    .selected-option {
+      background-color: rgba(168, 85, 247, 0.2);
+      font-weight: 600;
+      border-color: #a855f7;
+    }
+
+    .correct-option {
+      background-color: rgba(16, 185, 129, 0.2);
+      border-color: #10b981;
+    }
+
+    .status {
+      font-weight: 600;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px dashed #333;
+      display: flex;
+      align-items: center;
+    }
+
+    .status-icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      margin-right: 12px;
+    }
+
+    .correct .status {
+      color: #10b981;
+    }
+
+    .correct .status-icon {
+      background-color: #10b981;
+    }
+
+    .incorrect .status {
+      color: #ef4444;
+    }
+
+    .incorrect .status-icon {
+      background-color: #ef4444;
+    }
+
+    .unanswered .status {
+      color: #6b7280;
+    }
+
+    .unanswered .status-icon {
+      background-color: #6b7280;
+    }
+
+    /* Buttons */
+    .back-btn {
+      margin-top: 40px;
+      display: inline-block;
+      padding: 15px 40px;
+      background: linear-gradient(to right, #7c3aed, #a855f7);
+      color: white;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .back-btn:hover {
+      background: linear-gradient(to right, #a855f7, #7c3aed);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+    }
+
+    /* Messages */
+    .error-message {
+      color: #ef4444;
+      font-weight: 600;
+      text-align: center;
+      padding: 20px;
+      background: rgba(239, 68, 68, 0.1);
+      border-radius: 8px;
+      border: 1px solid #ef4444;
+    }
+
+    .no-questions-message {
+      color: #9ca3af;
+      text-align: center;
+      padding: 20px;
+      background: rgba(156, 163, 175, 0.1);
+      border-radius: 8px;
+      border: 1px solid #6b7280;
+      font-style: italic;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .result-card {
+        padding: 30px 20px;
+        margin-top: 70px;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      .score-circle {
+        width: 120px;
+        height: 120px;
+      }
+
+      .score-percentage {
+        font-size: 2rem;
+      }
+
+      .result-item {
+        font-size: 1.1rem;
+        flex-direction: column;
+        gap: 5px;
+        align-items: center;
+        text-align: center;
+      }
+
+      .result-label {
+        margin-bottom: 5px;
+      }
+
+      .question-result {
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Navbar -->
+  <nav>
+    <div class="nav-left">
+      <span class="logo-text">CampusConnect</span>
+    </div>
+  </nav>
+
+  <!-- Result Card -->
   <div class="result-card">
     <h2>Test Result</h2>
-    <p id="testType"></p>
-    <p id="score"></p>
-    <p id="correct"></p>
-    <p id="timestamp"></p>
-    <a href="/student-home">Back to Home</a>
+    
+    <div class="summary-section" id="result-content">
+      <!-- Summary content will be loaded here -->
+    </div>
+    
+    <div class="questions-container">
+      <h3 class="questions-title">Question Review</h3>
+      <div id="questions-content">
+        <!-- Questions will be loaded here -->
+      </div>
+    </div>
+    
+    <div style="text-align: center;">
+      <a href="/student-home" class="back-btn">Back to Dashboard</a>
+    </div>
   </div>
 
   <script>
+    // Your existing script remains exactly the same
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
 
-    fetch(`/api/result?id=${id}`)
-      .then(res => res.json())
-      .then(result => {
-        document.getElementById('testType').textContent = `Test Type: ${result.test_type}`;
-        document.getElementById('score').textContent = `Score: ${result.score} / ${result.attempted_questions}`;
-        document.getElementById('correct').textContent = `Correct Answers: ${result.correct_answers}`;
-        document.getElementById('timestamp').textContent = `Test Taken On: ${new Date(result.timestamp).toLocaleString()}`;
-      })
-      .catch(() => {
-        document.querySelector('.result-card').innerHTML = '<h2>Result not found</h2>';
-      });
+    if (!id) {
+      document.getElementById('result-content').innerHTML = `
+        <p class="error-message">No result ID provided</p>
+      `;
+      document.getElementById('questions-content').innerHTML = '';
+    } else {
+      fetch(`/api/result?id=${id}`)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error('Result not found');
+          }
+          return res.json();
+        })
+        .then(result => {
+          if (result.error) {
+            throw new Error(result.error);
+          }
+
+          const percentage = Math.round((result.correct_answers / result.total_questions) * 100);
+          
+          // Render summary
+          document.getElementById('result-content').innerHTML = `
+            <div class="score-circle">
+              <div class="score-percentage">${percentage}%</div>
+              <div>Score</div>
+            </div>
+            <div class="result-item">
+              <span class="result-label">Test Type:</span>
+              <span>${result.test_type.charAt(0).toUpperCase() + result.test_type.slice(1)} Test</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">Questions Attempted:</span>
+              <span>${result.attempted_questions} / ${result.total_questions}</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">Correct Answers:</span>
+              <span>${result.correct_answers}</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">Date Taken:</span>
+              <span>${new Date(result.timestamp).toLocaleString()}</span>
+            </div>
+          `;
+
+          // Render questions if available
+          if (result.questions && result.questions.length > 0) {
+            const questionsHTML = result.questions.map((q, index) => {
+              const statusClass = q.selected ? 
+                (q.is_correct ? 'correct' : 'incorrect') : 
+                'unanswered';
+              
+              const statusText = q.selected ? 
+                (q.is_correct ? 'Correct Answer' : 'Incorrect Answer') : 
+                'Not Answered';
+              
+              return `
+                <div class="question-result ${statusClass}">
+                  <div class="question-text">Q${index + 1}: ${q.question_text}</div>
+                  ${['A', 'B', 'C', 'D'].map(opt => {
+                    const isSelected = q.selected === `option_${opt}`;
+                    const isCorrect = q.correct_answer === `option_${opt}`;
+                    let optionClass = '';
+                    
+                    if (isSelected && isCorrect) optionClass = 'selected-option correct-option';
+                    else if (isSelected) optionClass = 'selected-option';
+                    else if (isCorrect) optionClass = 'correct-option';
+                    
+                    return `
+                      <div class="option ${optionClass}">
+                        ${opt}. ${q.options[opt]}
+                      </div>
+                    `;
+                  }).join('')}
+                  <div class="status">
+                    <span class="status-icon"></span>
+                    ${statusText}
+                    ${q.selected && !q.is_correct ? 
+                      `<span style="margin-left: 10px;">Correct answer was: ${q.correct_answer.replace('option_', '').toUpperCase()}</span>` : 
+                      ''}
+                  </div>
+                </div>
+              `;
+            }).join('');
+
+            document.getElementById('questions-content').innerHTML = questionsHTML;
+          } else {
+            document.getElementById('questions-content').innerHTML = `
+              <p class="no-questions-message">
+                Question details are not available. They are only stored temporarily during your session.
+                <br>To review questions, please check immediately after completing the test.
+              </p>
+            `;
+          }
+        })
+        .catch(err => {
+          document.getElementById('result-content').innerHTML = `
+            <p class="error-message">Error loading result: ${err.message}</p>
+          `;
+          document.getElementById('questions-content').innerHTML = '';
+          console.error('Error:', err);
+        });
+    }
   </script>
 </body>
 </html>

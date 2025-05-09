@@ -2,188 +2,250 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Club Home | NextStepNIE</title>
+  <title>Club Dashboard | CampusConnect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #d0f0f2, #faffff);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #0f0f0f, #1f1f1f);
+      color: #ffffff;
       min-height: 100vh;
-      flex-direction: column;
-      padding: 40px 20px;
-      position: relative;
+      padding: 0 0 40px;
     }
 
-    .logo-container {
-      position: absolute;
-      top: 20px;
-      left: 20px;
+    /* Navbar */
+    nav {
+      width: 100%;
+      padding: 16px 5%;
+      background: rgba(15, 15, 15, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #ff660050;
     }
 
-    .logo-container img {
-      width: 200px;
-      height: auto;
-      object-fit: contain;
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .nav-left .logo-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ff9800;
+      background: linear-gradient(to right, #ff9800, #ff6600);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-right .logout-btn {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 50px;
+      background: linear-gradient(to right, #ff4d4d, #ff7a18);
+      transition: all 0.3s ease;
+    }
+
+    .nav-right .logout-btn:hover {
+      background: linear-gradient(to right, #ff1a1a, #ff6600);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+    }
+
+    /* Main Content */
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 5%;
+    }
+
+    .welcome-section {
+      text-align: center;
+      margin-bottom: 60px;
     }
 
     h2 {
-      font-size: 2.8rem;
-      margin-bottom: 10px;
-      color: #22666a;
-      text-align: center;
+      font-size: 2.5rem;
+      color: #ff6600;
+      margin-bottom: 15px;
     }
 
     .tagline {
       font-size: 1.2rem;
-      color: #4a7d80;
-      text-align: center;
-      margin-bottom: 40px;
+      color: #aaa;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
+    /* 3-column Grid Layout */
     .card-container {
       display: grid;
-      grid-template-columns: repeat(3, 320px); /* now 3 cards in a row */
-      gap: 40px;
-      justify-content: center;
-      max-width: 1200px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
       width: 100%;
-      margin-bottom: 60px;
     }
 
-
-    .login-card {
-      background: #ffffff;
-      width: 100%;
-      height: 250px;
-      padding: 30px 25px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 100, 100, 0.1);
-      text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
-      border: 1px solid #c4f1f3;
+    .card {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      border: 1px solid #333;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      height: 100%;
     }
 
-    .login-card:hover {
-      transform: translateY(-12px) scale(1.04);
-      box-shadow: 0 16px 35px rgba(0, 180, 180, 0.3);
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(255, 115, 0, 0.2);
+      border-color: #ff6600;
     }
 
-    .login-title {
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #ff9800;
+    }
+
+    .card-title {
       font-size: 1.5rem;
-      font-weight: bold;
-      color: #009ca6;
+      font-weight: 700;
+      color: #ff9800;
+      margin-bottom: 15px;
     }
 
-    .login-desc {
-      font-size: 1.05rem;
-      color: #4a7d80;
-      margin: 20px 0;
+    .card-desc {
+      font-size: 1rem;
+      color: #ddd;
+      margin-bottom: 25px;
+      line-height: 1.6;
+      flex-grow: 1;
     }
 
-    .login-btn {
+    .card-btn {
       padding: 12px 20px;
       font-size: 1rem;
       color: #fff;
-      background-color: #00bfc6;
+      background: linear-gradient(to right, #7c3aed, #a855f7);
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      width: 100%;
     }
 
-    .login-btn:hover {
-      background-color: #009ca6;
+    .card-btn:hover {
+      background: linear-gradient(to right, #a855f7, #7c3aed);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
     }
 
+    /* Remove link underlines */
     a {
       text-decoration: none;
+      color: inherit;
     }
 
-    .logout-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      padding: 12px 20px;
-      font-size: 1rem;
-      color: #fff;
-      background-color: #ff4d4d;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .logout-btn:hover {
-      background-color: #e60000;
-      transform: scale(1.1);
-      box-shadow: 0 8px 16px rgba(255, 77, 77, 0.2);
-    }
-
-    @media (max-width: 1000px) {
-      .login-card {
-        width: 90%;
-        max-width: 400px;
-        height: auto;
+    /* Responsive Design */
+    @media (max-width: 1100px) {
+      .card-container {
+        grid-template-columns: repeat(2, 1fr);
       }
+    }
 
-      h2 {
-        font-size: 2rem;
-        margin-bottom: 30px;
-      }
-
+    @media (max-width: 768px) {
       .card-container {
         grid-template-columns: 1fr;
-        gap: 20px;
+      }
+      
+      nav {
+        padding: 12px 5%;
+      }
+      
+      .nav-left .logo-text {
+        font-size: 1.5rem;
+      }
+      
+      h2 {
+        font-size: 2rem;
+      }
+      
+      .tagline {
+        font-size: 1rem;
       }
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <div class="logo-container">
-    <img src="logo.png" alt="NextStepNIE Logo">
+  <!-- Navbar -->
+  <nav>
+    <div class="nav-left">
+      <span class="logo-text">CampusConnect</span>
+    </div>
+    <div class="nav-right">
+      <a href="index.html" class="logout-btn">Logout</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="welcome-section">
+      <h2>Club Dashboard</h2>
+      <p class="tagline">Manage your club efficiently with our comprehensive tools</p>
+    </div>
+
+    <div class="card-container">
+      <a href="manage_announcements.html" class="card">
+        <div class="card-icon">
+          <i class="fas fa-bullhorn"></i>
+        </div>
+        <h3 class="card-title">Manage Announcements</h3>
+        <p class="card-desc">Create, edit, and publish announcements to keep your members informed about upcoming events and important updates.</p>
+        <button class="card-btn">Manage</button>
+      </a>
+
+      <a href="manage_activities.html" class="card">
+        <div class="card-icon">
+          <i class="fas fa-calendar-alt"></i>
+        </div>
+        <h3 class="card-title">Manage Activities</h3>
+        <p class="card-desc">Organize and schedule your club's events, workshops, and meetings with our activity management tools.</p>
+        <button class="card-btn">Organize</button>
+      </a>
+
+      <a href="edit_club_profile.html" class="card">
+        <div class="card-icon">
+          <i class="fas fa-edit"></i>
+        </div>
+        <h3 class="card-title">Edit Club Profile</h3>
+        <p class="card-desc">Update your club's information, description, and contact details to attract new members.</p>
+        <button class="card-btn">Update</button>
+      </a>
+    </div>
   </div>
-
-  <h2>Welcome, Club!</h2>
-  <div class="tagline">Manage your club efficiently with the tools below</div>
-
-  <div class="card-container">
-    <a href="manage_announcements.html">
-      <div class="login-card">
-        <div class="login-title">Manage Announcements</div>
-        <div class="login-desc">Create and update announcements for your club.</div>
-        <button class="login-btn">Go</button>
-      </div>
-    </a>
-
-    <a href="manage_activities.html">
-      <div class="login-card">
-        <div class="login-title">Manage Activities</div>
-        <div class="login-desc">Add or edit your club's ongoing and past activities.</div>
-        <button class="login-btn">Manage</button>
-      </div>
-    </a>
-
-    <a href="edit_club_profile.html">
-      <div class="login-card">
-        <div class="login-title">Edit Club Profile</div>
-        <div class="login-desc">Update your club’s description, contact, and other details.</div>
-        <button class="login-btn">Edit</button>
-      </div>
-    </a>
-  </div>
-
-  <a href="index.html"><button class="logout-btn">Logout</button></a>
 </body>
 </html>

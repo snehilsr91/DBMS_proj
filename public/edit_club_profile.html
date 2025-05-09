@@ -1,83 +1,560 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Edit Club Profile</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Club Profile | CampusConnect</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #d0f0f2, #faffff);
-      padding: 40px 20px;
-      min-height: 100vh;
-    }
+        body {
+            font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom right, #0f0f0f, #1f1f1f);
+            color: #ffffff;
+            min-height: 100vh;
+        }
 
-    h2 {
-      font-size: 2.2rem;
-      text-align: center;
-      color: #22666a;
-      margin-bottom: 30px;
-    }
+        /* Navbar */
+        nav {
+            width: 100%;
+            padding: 16px 5%;
+            background: rgba(15, 15, 15, 0.95);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #ff660050;
+        }
 
-    .form-card {
-      background: #ffffff;
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0, 150, 150, 0.1);
-      max-width: 600px;
-      margin: 0 auto 40px;
-    }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-    input[type="text"], input[type="email"], input[type="url"] {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
+        .nav-left .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ff9800;
+            background: linear-gradient(to right, #ff9800, #ff6600);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-    button {
-      padding: 12px 20px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 10px;
-      background-color: #00bfc6;
-      color: #fff;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
 
-    button:hover {
-      background-color: #009ca6;
-    }
+        .nav-right .logout-btn {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: linear-gradient(to right, #ff4d4d, #ff7a18);
+            transition: all 0.3s ease;
+        }
 
-    @media (max-width: 768px) {
-      .form-card {
-        width: 90%;
-      }
-    }
-  </style>
+        .nav-right .logout-btn:hover {
+            background: linear-gradient(to right, #ff1a1a, #ff6600);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 5%;
+        }
+
+        h1, h2 {
+            color: #ff6600;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid #ff6600;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            border-bottom: 1px solid #444;
+            padding-bottom: 8px;
+            margin-top: 40px;
+        }
+
+        /* Form Styles */
+        .form-card {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+            border: 1px solid #333;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #ddd;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #2a2a2a;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #ff6600;
+            box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Logo Upload */
+        .logo-upload-container {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .logo-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ff9800;
+        }
+
+        .logo-upload {
+            flex-grow: 1;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #7c3aed, #a855f7);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(to right, #a855f7, #7c3aed);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(to right, #ff4d4d, #ff7a18);
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(to right, #ff1a1a, #ff6600);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+        }
+
+        /* Members Table */
+        .members-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .members-table th {
+            background-color: #2a2a2a;
+            padding: 14px;
+            text-align: left;
+            color: #ff9800;
+            font-weight: 600;
+        }
+
+        .members-table td {
+            padding: 12px;
+            border-bottom: 1px solid #333;
+            color: #ddd;
+        }
+
+        .members-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .members-table tr:hover td {
+            background-color: #2a2a2a;
+        }
+
+        /* President Info */
+        #presidentInfo {
+            padding: 12px;
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            color: #ddd;
+            border-left: 4px solid #ff9800;
+        }
+
+        /* Error Message */
+        #studentNotFound {
+            color: #ff4d4d;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 30px 20px;
+            }
+
+            .logo-upload-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .members-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Navbar -->
+    <nav>
+        <div class="nav-left">
+            <span class="logo-text">CampusConnect</span>
+        </div>
+        <div class="nav-right">
+            <a href="club_home.html" class="logout-btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </nav>
 
-  <h2>Edit Club Profile</h2>
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Edit Club Profile</h1>
 
-  <!-- Edit Club Profile Form -->
-  <div class="form-card">
-    <form method="POST" action="/edit-club-profile">
-      <input type="text" name="club_name" placeholder="Club Name" required />
-      <input type="email" name="contact_email" placeholder="Contact Email" required />
-      <input type="url" name="website" placeholder="Website (optional)" />
-      <textarea name="description" placeholder="Description" rows="5" required></textarea>
-      <button type="submit">Save Changes</button>
-    </form>
-  </div>
+        <!-- Update Club Profile Form -->
+        <div class="form-card">
+            <form id="updateProfileForm">
+                <div class="form-group">
+                    <label for="club_name">Club Name</label>
+                    <input type="text" id="club_name" name="club_name" placeholder="Enter Club Name">
+                </div>
 
+                <div class="form-group">
+                    <label for="contact_email">Contact Email</label>
+                    <input type="email" id="contact_email" name="contact_email" placeholder="Enter Contact Email">
+                </div>
+
+                <div class="form-group">
+                    <label for="website">Website</label>
+                    <input type="url" id="website" name="website" placeholder="Enter Website URL">
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" placeholder="Enter Description"></textarea>
+                </div>
+
+                <!-- President Info -->
+                <div class="form-group">
+                    <label>President</label>
+                    <div id="presidentInfo">Loading president info...</div>
+                    <input type="hidden" id="president_usn" name="president_usn">
+                </div>
+
+                <!-- Logo Upload with Preview -->
+                <div class="form-group">
+                    <label>Club Logo</label>
+                    <div class="logo-upload-container">
+                        <img id="clubLogo" class="logo-preview" src="https://via.placeholder.com/100?text=No+Logo" alt="Club Logo Preview">
+                        <div class="logo-upload">
+                            <input type="file" id="logo" name="logo" accept="image/*" style="color: #ddd;">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+
+        <!-- Members Table -->
+        <h2>Club Members</h2>
+        <table class="members-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>USN</th>
+                    <th>Branch</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="membersTableBody">
+                <!-- Members will be loaded here -->
+            </tbody>
+        </table>
+
+        <!-- Add Member Form -->
+        <h2>Add Member to Club</h2>
+        <div class="form-card">
+            <form id="addMemberForm">
+                <div class="form-group">
+                    <label for="usn">USN</label>
+                    <input type="text" id="usn" name="usn" placeholder="Enter USN">
+                    <div id="studentNotFound">Student not found</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select id="role" name="role">
+                        <option value="Volunteer">Volunteer</option>
+                        <option value="Core">Core</option>
+                        <option value="Lead">Lead</option>
+                        <option value="President">President</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-user-plus"></i> Add Member
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- [JavaScript remains exactly the same as in your original code] -->
+    <script>
+        $(document).ready(function() {
+            // Load club profile data
+            function loadClubProfile() {
+                $.get('/api/club/profile', function(response) {
+                    if (response.success) {
+                        const club = response.club;
+                        
+                        // Fill form fields
+                        $('#club_name').val(club.name || '');
+                        $('#contact_email').val(club.contact_email || '');
+                        $('#website').val(club.website || '');
+                        $('#description').val(club.description || '');
+
+                        // Set logo if available
+                        if (club.logo_url) {
+                            $('#clubLogo').attr('src', club.logo_url);
+                        }
+
+                        // Load members table
+                        loadMembersTable(response.members);
+
+                        // Find and display president
+                        const president = response.members.find(m => m.role === 'President');
+                        if (president) {
+                            $('#presidentInfo').html(`
+                                ${president.name} (${president.usn})
+                            `);
+                            $('#president_usn').val(president.usn);
+                        } else {
+                            $('#presidentInfo').text('No President');
+                            $('#president_usn').val('');
+                        }
+                    }
+                }).fail(function() {
+                    alert('Failed to load club profile');
+                });
+            }
+
+            // Load members into table
+            function loadMembersTable(members) {
+                const membersTableBody = $('#membersTableBody');
+                membersTableBody.empty();
+
+                if (members && members.length > 0) {
+                    members.forEach(member => {
+                        membersTableBody.append(`
+                            <tr>
+                                <td>${member.name}</td>
+                                <td>${member.usn}</td>
+                                <td>${member.branch}</td>
+                                <td>${member.role}</td>
+                                <td>
+                                    <button class="btn btn-danger remove-member" data-usn="${member.usn}">
+                                        <i class="fas fa-user-minus"></i> Remove
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+
+                    // Add event listeners to remove buttons
+                    $('.remove-member').click(function() {
+                        const usn = $(this).data('usn');
+                        if (confirm(`Are you sure you want to remove ${usn} from the club?`)) {
+                            removeMember(usn);
+                        }
+                    });
+                } else {
+                    membersTableBody.append(`
+                        <tr>
+                            <td colspan="5" style="text-align: center;">No members found</td>
+                        </tr>
+                    `);
+                }
+            }
+
+            // Remove member function
+            function removeMember(usn) {
+                $.post('/api/club/remove-member', { usn: usn }, function(response) {
+                    if (response.success) {
+                        loadClubProfile(); // Refresh the data
+                    } else {
+                        alert('Failed to remove member');
+                    }
+                }).fail(function() {
+                    alert('Error removing member');
+                });
+            }
+
+            // Check if student exists
+            $('#usn').on('input', function() {
+                const usn = $(this).val().trim();
+                if (usn) {
+                    $.get(`/api/student/check?usn=${encodeURIComponent(usn)}`, function(response) {
+                        $('#studentNotFound').toggle(!response.exists);
+                    }).fail(function() {
+                        $('#studentNotFound').show();
+                    });
+                } else {
+                    $('#studentNotFound').hide();
+                }
+            });
+
+            $('#updateProfileForm').on('submit', function(event) {
+                event.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                $.ajax({
+                    url: '/api/club/update-profile',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Profile updated successfully');
+                            // Force refresh the image by adding a timestamp query parameter
+                            if (response.logo_url) {
+                                $('#clubLogo').attr('src', response.logo_url + '?' + new Date().getTime());
+                            }
+                        } else {
+                            alert('Failed to update profile');
+                        }
+                    },
+                    error: function() {
+                        alert('Error updating profile');
+                    }
+                });
+            });
+
+            // Handle add member
+            $('#addMemberForm').on('submit', function(event) {
+                event.preventDefault();
+                
+                const usn = $('#usn').val().trim();
+                const role = $('#role').val();
+                
+                if (!usn) {
+                    alert('Please enter a USN');
+                    return;
+                }
+
+                if ($('#studentNotFound').is(':visible')) {
+                    alert('Please enter a valid USN');
+                    return;
+                }
+
+                $.post('/api/club/add-member', { usn: usn, role: role }, function(response) {
+                    if (response.success) {
+                        alert('Member added successfully');
+                        $('#usn').val('');
+                        $('#role').val('Volunteer');
+                        $('#studentNotFound').hide();
+                        loadClubProfile(); // Refresh the data
+                    } else {
+                        alert(response.error || 'Failed to add member');
+                    }
+                }).fail(function() {
+                    alert('Error adding member');
+                });
+            });
+
+            // Preview logo when selected
+            $('#logo').change(function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        $('#clubLogo').attr('src', event.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Initial load
+            loadClubProfile();
+        });
+    </script>
 </body>
 </html>

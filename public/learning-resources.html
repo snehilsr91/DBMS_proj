@@ -2,194 +2,315 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Learning Resources | NextStepNIE</title>
+  <title>Learning Resources | CampusConnect</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
+    * {
+      box-sizing: border-box;
       margin: 0;
-      background: linear-gradient(135deg, #d0f0f2, #faffff);
-      padding: 40px 20px;
+      padding: 0;
     }
 
-    .logo-link {
-      position: absolute;
-      top: 20px;
-      left: 20px;
+    body {
+      font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #0f0f0f, #1f1f1f);
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 0;
     }
 
-    .logo-img {
-      width: 140px;
-      height: auto;
-      object-fit: contain;
-      transition: transform 0.3s ease;
-    }
-
-    .logo-img:hover {
-      transform: scale(1.05);
-    }
-
-    h1 {
-      text-align: center;
-      padding-top: 80px;
-      font-size: 2.5rem;
-      color: #22666a;
-      margin-bottom: 10px;
-    }
-
-    .tagline {
-      text-align: center;
-      font-size: 1.2rem;
-      color: #4a7d80;
-      margin-bottom: 40px;
-    }
-
+    /* Navbar */
     nav {
-      text-align: center;
-      margin-bottom: 30px;
+      width: 100%;
+      padding: 16px 5%;
+      background: rgba(15, 15, 15, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #ff660050;
     }
 
-    nav a {
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .nav-left .logo-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ff9800;
+      background: linear-gradient(to right, #ff9800, #ff6600);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-right .back-btn {
+      color: #fff;
       text-decoration: none;
-      color: #00bfc6;
-      font-weight: bold;
-      border: 2px solid #00bfc6;
+      font-weight: 600;
       padding: 10px 20px;
-      border-radius: 12px;
-      background-color: white;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      border-radius: 50px;
+      background: linear-gradient(to right, #7c3aed, #a855f7);
       transition: all 0.3s ease;
     }
 
-    nav a:hover {
-      background-color: #00bfc6;
-      color: white;
-      box-shadow: 0 8px 16px rgba(0, 191, 198, 0.3);
+    .nav-right .back-btn:hover {
+      background: linear-gradient(to right, #a855f7, #7c3aed);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
     }
 
-    .card-container {
-      display: flex;
-      gap: 30px;
-      flex-wrap: wrap;
-      justify-content: center;
+    /* Main Content */
+    .main-content {
       max-width: 1200px;
-      margin: auto;
+      margin: 0 auto;
+      padding: 40px 5%;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #ff6600;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      color: #aaa;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    /* Search Bar */
+    .search-container {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 14px 20px;
+      padding-left: 50px;
+      border-radius: 50px;
+      border: 1px solid #444;
+      font-size: 1rem;
+      background-color: #2a2a2a;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #ff6600;
+      box-shadow: 0 0 0 2px rgba(255, 115, 0, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #aaa;
+    }
+
+    /* Subject Cards */
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+      width: 100%;
     }
 
     .subject-card {
-      background: #ffffff;
-      width: 300px;
-      height: 220px;
-      padding: 25px 20px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 100, 100, 0.1);
-      text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
-      border: 1px solid #c4f1f3;
+      background: #1a1a1a;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      border: 1px solid #333;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      height: 100%;
     }
 
     .subject-card:hover {
-      transform: translateY(-10px) scale(1.03);
-      box-shadow: 0 16px 35px rgba(0, 180, 180, 0.25);
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(255, 115, 0, 0.2);
+      border-color: #ff6600;
+    }
+
+    .subject-icon {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #ff9800;
+      text-align: center;
     }
 
     .subject-title {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #009ca6;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #ff9800;
+      margin-bottom: 15px;
+      text-align: center;
     }
 
     .subject-description {
       font-size: 1rem;
-      color: #4a7d80;
-      margin-top: 10px;
-      font-style: italic;
+      color: #ddd;
+      margin-bottom: 25px;
+      line-height: 1.6;
+      flex-grow: 1;
     }
 
-    .load-btn {
-      padding: 10px;
-      font-size: 0.95rem;
+    .subject-btn {
+      padding: 12px 20px;
+      font-size: 1rem;
       color: #fff;
-      background-color: #00bfc6;
+      background: linear-gradient(to right, #7c3aed, #a855f7);
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      margin-top: 15px;
-      transition: background-color 0.2s ease;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      display: block;
     }
 
-    .load-btn:hover {
-      background-color: #009ca6;
+    .subject-btn:hover {
+      background: linear-gradient(to right, #a855f7, #7c3aed);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
     }
 
-    @media (max-width: 600px) {
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: #aaa;
+      font-size: 1.2rem;
+      padding: 40px 0;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
       h1 {
         font-size: 2rem;
       }
-
-      .subject-card {
-        width: 90%;
-        height: auto;
+      
+      .tagline {
+        font-size: 1rem;
+      }
+      
+      .card-container {
+        grid-template-columns: 1fr;
       }
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <a href="index.html" class="logo-link">
-    <img src="logo.png" alt="NextStepNIE Logo" class="logo-img">
-  </a>
-
-  <h1>Explore Learning Resources</h1>
-  <div class="tagline">Choose a subject to access curated materials</div>
+  <!-- Navbar -->
   <nav>
-    <a href="/student-home">← Back to Home</a>
+    <div class="nav-left">
+      <span class="logo-text">CampusConnect</span>
+    </div>
+    <div class="nav-right">
+      <a href="student_home.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
   </nav>
 
-  <div class="card-container" id="subject-buttons"></div>
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1>Learning Resources</h1>
+    <p class="tagline">Access curated study materials, books, and resources for all subjects</p>
+
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" class="search-input" placeholder="Search subjects..." id="searchInput">
+    </div>
+
+    <div class="card-container" id="subject-buttons">
+      <div class="no-results">Loading subjects...</div>
+    </div>
+  </div>
 
   <script>
+    // Global variable to store all subjects
+    let allSubjects = [];
+
+    // Function to render subjects
+    function renderSubjects(subjectsToRender) {
+      const subjectContainer = document.getElementById('subject-buttons');
+      
+      if (subjectsToRender.length === 0) {
+        subjectContainer.innerHTML = `
+          <div class="no-results">
+            No subjects found matching your search.
+          </div>
+        `;
+        return;
+      }
+
+      subjectContainer.innerHTML = subjectsToRender.map(subj => `
+        <div class="subject-card">
+          <div class="subject-icon">
+            <i class="fas ${subj.icon || 'fa-book'}"></i>
+          </div>
+          <h3 class="subject-title">${subj.name}</h3>
+          <p class="subject-description">${subj.description || 'Explore learning resources for this subject'}</p>
+          <a href="/subject-resources.html?subjectId=${subj.id}" class="subject-btn">
+            View Resources
+          </a>
+        </div>
+      `).join('');
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      const filteredSubjects = allSubjects.filter(subj => 
+        subj.name.toLowerCase().includes(searchTerm) || 
+        (subj.description && subj.description.toLowerCase().includes(searchTerm))
+      );
+      renderSubjects(filteredSubjects);
+    });
+
+    // Load subjects from API
     async function loadSubjects() {
       try {
         const res = await fetch('/api/subjects');
-        const subjects = await res.json();
-
-        const subjectContainer = document.getElementById('subject-buttons');
-        subjectContainer.innerHTML = '';
-        subjects.forEach(subj => {
-          const card = document.createElement('div');
-          card.className = 'subject-card';
-
-          const title = document.createElement('div');
-          title.className = 'subject-title';
-          title.textContent = subj.name;
-
-          const description = document.createElement('div');
-          description.className = 'subject-description';
-          description.textContent = subj.description;
-
-          const btn = document.createElement('button');
-          btn.className = 'load-btn';
-          btn.textContent = 'View Resources';
-          btn.onclick = () => {
-            // Navigate to the new page with the subject ID
-            window.location.href = `/subject-resources.html?subjectId=${subj.id}`;
-          };
-
-          card.appendChild(title);
-          card.appendChild(description);
-          card.appendChild(btn);
-          subjectContainer.appendChild(card);
-        });
+        const data = await res.json();
+        allSubjects = data;
+        renderSubjects(allSubjects);
       } catch (err) {
         console.error('Error loading subjects:', err);
+        document.getElementById('subject-buttons').innerHTML = `
+          <div class="no-results" style="color: #ff4d4d;">
+            Error loading subjects. Please try again later.
+          </div>
+        `;
       }
     }
 
-    loadSubjects();
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', loadSubjects);
   </script>
 </body>
 </html>
