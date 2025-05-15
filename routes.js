@@ -617,6 +617,16 @@ router.get('/api/club/president-name', (req, res) => {
 
 // Update club profile
 router.post('/api/club/update-profile', upload.single('logo'), (req, res) => {
+
+    console.log('Session data:', req.session); // Add this line
+    console.log('Club session:', req.session.club); // Add this line
+    
+    if (!req.session.club) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    const clubId = req.session.club.club_id;
+    console.log('Updating profile for club:', clubId); // Add this line
     console.log('Upload completed. File info:', req.file); // Should show path, size, etc.
     
     if (req.file) {
@@ -632,8 +642,6 @@ router.post('/api/club/update-profile', upload.single('logo'), (req, res) => {
     if (!req.session.club) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
-    
-    const clubId = req.session.club.club_id;
     const { 
         club_name, 
         contact_email, 
