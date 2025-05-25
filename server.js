@@ -8,10 +8,8 @@ require('dotenv').config();
 
 const app = express();
 
-// Use express.json() for parsing JSON data
-app.use(express.json());  // Add this line to parse JSON bodies
+app.use(express.json());
 
-// You can still use bodyParser for urlencoded form data if needed
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static('public'));

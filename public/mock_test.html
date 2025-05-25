@@ -4,295 +4,348 @@
   <meta charset="UTF-8">
   <title>Mock Tests | CampusConnect</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    :root {
+      --primary-orange: #ff9800;
+      --primary-orange-dark: #ff6600;
+      --text-light: #f0f0f0;
+      --text-dark: #121212;
+      --text-muted: #ccc;
+      --bg-navbar: rgba(15, 15, 15, 0.95);
+      --bg-container-card: rgba(15, 15, 15, 0.9);
+      --bg-element-dark: #2b2b3d;
+      --border-light: rgba(255, 255, 255, 0.1);
+      --border-medium: #5e5e5e;
+      --shadow-strong: rgba(0, 0, 0, 0.5);
+      --shadow-brand: rgba(255, 152, 0, 0.3);
+    }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     body {
-      font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom right, #0f0f0f, #1f1f1f);
-      color: #ffffff;
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-light);
       min-height: 100vh;
       padding: 0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
     }
-
-    /* Navbar */
+    .background-carousel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: -2;
+      overflow: hidden;
+    }
+    .background-carousel .carousel-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      animation: fadeImage 18s infinite;
+    }
+    .background-carousel .carousel-image:nth-child(1) { animation-delay: 0s; }
+    .background-carousel .carousel-image:nth-child(2) { animation-delay: 6s; }
+    .background-carousel .carousel-image:nth-child(3) { animation-delay: 12s; }
+    @keyframes fadeImage {
+      0%   { opacity: 0; }
+      15%  { opacity: 1; }
+      85%  { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: -1;
+    }
     nav {
       width: 100%;
       padding: 16px 5%;
-      background: rgba(15, 15, 15, 0.95);
+      background: var(--bg-navbar);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 20px var(--shadow-strong);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
       border-bottom: 1px solid #ff660050;
     }
-
     .nav-left {
       display: flex;
       align-items: center;
       gap: 15px;
     }
-
     .nav-left .logo-text {
       font-size: 1.8rem;
-      font-weight: 700;
-      color: #ff9800;
-      background: linear-gradient(to right, #ff9800, #ff6600);
+      font-weight: 600;
+      color: var(--primary-orange);
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
     .nav-right {
       display: flex;
       align-items: center;
     }
-
     .nav-right .back-btn {
-      color: #fff;
+      color: var(--text-dark);
       text-decoration: none;
       font-weight: 600;
       padding: 10px 20px;
       border-radius: 50px;
-      background: linear-gradient(to right, #7c3aed, #a855f7);
-      transition: all 0.3s ease;
-    }
-
-    .nav-right .back-btn:hover {
-      background: linear-gradient(to right, #a855f7, #7c3aed);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
-    }
-
-    .back-btn {
-      padding: 8px 16px;
-      background: linear-gradient(to right, #7c3aed, #a855f7);
-      color: white;
-      border: none;
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
       gap: 8px;
-      text-decoration: none;
     }
-
-    .back-btn:hover {
-      background: linear-gradient(to right, #a855f7, #7c3aed);
+    .nav-right .back-btn:hover {
+      background: linear-gradient(to right, var(--primary-orange-dark), var(--primary-orange));
       transform: translateY(-2px);
+      box-shadow: 0 5px 15px var(--shadow-brand);
     }
-
-    /* Main Content */
     .main-content {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 40px 5%;
+      padding: 40px 5% 60px;
+      width: 100%;
+      flex-grow: 1;
     }
-
-    h1 {
-      font-size: 2.5rem;
-      color: #ff6600;
+    .page-title {
+      font-size: 2.8rem;
+      font-weight: 700;
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 50px;
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-
-    /* 2-column Grid Layout */
     .card-container {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 35px;
       width: 100%;
     }
-
     .test-card {
-      background: #1a1a1a;
-      padding: 30px;
+      background: var(--bg-container-card);
+      backdrop-filter: blur(5px);
+      padding: 35px;
       border-radius: 16px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-      border: 1px solid #333;
+      box-shadow: 0 8px 25px var(--shadow-strong);
+      transition: all 0.3s ease-in-out;
+      border: 1px solid var(--border-light);
       display: flex;
       flex-direction: column;
       height: 100%;
     }
-
     .test-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 15px 30px rgba(255, 115, 0, 0.2);
-      border-color: #ff6600;
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 15px 35px var(--shadow-brand);
+      border-color: var(--primary-orange);
     }
-
     .test-title {
       font-size: 1.8rem;
       font-weight: 700;
-      color: #ff9800;
+      color: var(--primary-orange);
       margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-
+    .test-title i {
+      font-size: 1.5em;
+    }
     .test-desc {
-      font-size: 1.1rem;
-      color: #ddd;
+      font-size: 1rem;
+      color: var(--text-muted);
       margin-bottom: 25px;
-      line-height: 1.6;
+      line-height: 1.7;
       flex-grow: 1;
     }
-
     .test-info {
-      font-size: 1rem;
-      color: #bbb;
+      font-size: 0.95rem;
+      color: #b0b0b0;
       margin-bottom: 25px;
-      line-height: 1.6;
+      line-height: 1.8;
     }
-
     .test-info strong {
-      color: #ff9800;
+      color: var(--primary-orange);
+      font-weight: 600;
     }
-
+    .test-info label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text-light);
+    }
     .question-select {
-      margin: 10px 0;
-      padding: 10px 15px;
+      margin-bottom: 15px;
+      padding: 12px 15px;
       border-radius: 8px;
-      border: 1px solid #333;
+      border: 1px solid var(--border-medium);
       font-size: 1rem;
-      color: #fff;
-      background: #2a2a2a;
+      color: var(--text-light);
+      background-color: var(--bg-element-dark);
       width: 100%;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg fill='%23cccccc' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 1em;
+      padding-right: 40px;
+      cursor: pointer;
     }
-
-    .dynamic-time {
-      font-weight: bold;
-      color: #a855f7;
+    .question-select:focus {
+      outline: none;
+      border-color: var(--primary-orange);
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.25);
     }
-
     .start-btn {
-      padding: 15px 30px;
-      font-size: 1.1rem;
-      color: white;
-      background: linear-gradient(to right, #7c3aed, #a855f7);
+      padding: 14px 30px;
+      font-size: 1.05rem;
+      color: var(--text-dark);
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
       border: none;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
       font-weight: 600;
       width: 100%;
-      margin-top: 10px;
+      margin-top: auto; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-
     .start-btn:hover {
-      background: linear-gradient(to right, #a855f7, #7c3aed);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+      background: linear-gradient(to right, var(--primary-orange-dark), var(--primary-orange));
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 15px var(--shadow-brand);
     }
-
     a {
       text-decoration: none;
       color: inherit;
     }
-
-    /* Responsive Design */
     @media (max-width: 900px) {
       .card-container {
         grid-template-columns: 1fr;
       }
-      
-      nav {
-        padding: 12px 5%;
-      }
-      
-      .nav-left .logo-text {
-        font-size: 1.5rem;
-      }
-      
-      h1 {
-        font-size: 2rem;
-      }
+      nav { padding: 12px 5%; }
+      .nav-left .logo-text { font-size: 1.5rem; }
+      .page-title { font-size: 2.2rem; margin-bottom: 40px;}
+    }
+    @media (max-width: 600px) {
+        .page-title { font-size: 2rem; }
+        .test-title { font-size: 1.6rem; }
+        .test-desc { font-size: 0.95rem; }
+        .test-info { font-size: 0.9rem; }
+        .start-btn { font-size: 1rem; padding: 12px 25px; }
     }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <!-- Navbar -->
+  <div class="background-carousel">
+    <div class="carousel-image" style="background-image: url('assets/stocka5.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stocka6.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stocka8.jpg');"></div>
+  </div>
   <nav>
     <div class="nav-left">
       <span class="logo-text">CampusConnect</span>
     </div>
     <div class="nav-right">
       <a href="student_home.html" class="back-btn">
-        <i class="fas fa-arrow-left"></i> Back to Dashboard
+        <i class="fas fa-arrow-left"></i> Dashboard
       </a>
     </div>
   </nav>
-
-  <!-- Main Content -->
   <div class="main-content">
-    <h1>Choose Your Mock Test</h1>
-    
+    <h1 class="page-title">Sharpen Your Skills: Mock Tests</h1>
     <div class="card-container">
       <div class="test-card">
-        <div class="test-title">Technical Test</div>
+        <div class="test-title"><i class="fas fa-laptop-code"></i>Technical Test</div>
         <div class="test-desc">
-          Tailored to your branch, this test covers relevant technical concepts and problem-solving skills. Whether you're in Computer Science, Electronics, Mechanical, or another branch, the questions will focus on key topics specific to your field.
+          Dive into branch-specific technical challenges. Assess your problem-solving abilities and core subject knowledge with questions curated for your field of study.
         </div>
         <div class="test-info">
           <label for="tech-questions">Number of Questions:</label>
           <select id="tech-questions" class="question-select" onchange="updateTime('tech-time', this.value)">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20" selected>20</option>
-            <option value="30">30</option>
+            <option value="5">5 Questions</option>
+            <option value="10">10 Questions</option>
+            <option value="20" selected>20 Questions</option>
+            <option value="30">30 Questions</option>
           </select>
-          <br><br>
-          <strong>Time Limit:</strong> <span id="tech-time" class="dynamic-time">10 minutes</span><br>
-          <strong>Difficulty Level:</strong> Intermediate to Advanced<br>
+          <p style="margin-top:15px;">
+            <strong>Time Limit:</strong> <span id="tech-time" class="dynamic-time">10 minutes</span><br>
+            <strong>Difficulty:</strong> Intermediate - Advanced
+          </p>
         </div>
         <a href="/technical-test" onclick="setQuestionCount('technical', document.getElementById('tech-questions').value)">
-          <button class="start-btn">Start Technical Test</button>
+          <button class="start-btn"><i class="fas fa-play-circle"></i>Start Technical Test</button>
         </a>
       </div>
-
       <div class="test-card">
-        <div class="test-title">HR Test</div>
+        <div class="test-title"><i class="fas fa-comments"></i>HR Aptitude Test</div>
         <div class="test-desc">
-          The HR Test evaluates your communication, personality, and behavioral skills. It includes questions designed to assess your readiness for job interviews, teamwork, leadership, and problem-solving in a workplace setting.
+          Evaluate your communication, personality, and behavioral skills. Prepare for interview scenarios, teamwork dynamics, and workplace problem-solving.
         </div>
         <div class="test-info">
           <label for="hr-questions">Number of Questions:</label>
           <select id="hr-questions" class="question-select" onchange="updateTime('hr-time', this.value)">
-            <option value="5">5</option>
-            <option value="10" selected>10</option>
-            <option value="20">20</option>
-            <option value="30">30</option>
+            <option value="5">5 Questions</option>
+            <option value="10" selected>10 Questions</option>
+            <option value="20">20 Questions</option>
+            <option value="30">30 Questions</option>
           </select>
-          <br><br>
-          <strong>Time Limit:</strong> <span id="hr-time" class="dynamic-time">5 minutes</span><br>
-          <strong>Difficulty Level:</strong> Beginner to Intermediate<br>
+          <p style="margin-top:15px;">
+            <strong>Time Limit:</strong> <span id="hr-time" class="dynamic-time">5 minutes</span><br>
+            <strong>Difficulty:</strong> Beginner - Intermediate
+          </p>
         </div>
         <a href="/hr-test" onclick="setQuestionCount('hr', document.getElementById('hr-questions').value)">
-          <button class="start-btn">Start HR Test</button>
+          <button class="start-btn"><i class="fas fa-play-circle"></i>Start HR Test</button>
         </a>
       </div>
     </div>
   </div>
-
   <script>
     function updateTime(elementId, questionCount) {
-      const minutes = Math.ceil(questionCount * 0.5); // 30 seconds per question
-      document.getElementById(elementId).textContent = `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+      const count = parseInt(questionCount, 10);
+      const minutes = Math.ceil(count / 2);
+      const timeString = minutes <= 1 ? `${minutes} minute` : `${minutes} minutes`;
+      document.getElementById(elementId).textContent = timeString;
     }
 
     function setQuestionCount(testType, count) {
       sessionStorage.setItem(`${testType}-question-count`, count);
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updateTime('tech-time', document.getElementById('tech-questions').value); 
+        updateTime('hr-time', document.getElementById('hr-questions').value);
+    });
   </script>
 </body>
 </html>

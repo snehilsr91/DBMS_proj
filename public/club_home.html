@@ -4,58 +4,105 @@
   <meta charset="UTF-8">
   <title>Club Dashboard | CampusConnect</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    :root {
+      --primary-orange: #ff9800;
+      --primary-orange-dark: #ff6600;
+      --text-light: #f0f0f0;
+      --text-dark: #121212;
+      --text-muted: #ccc;
+      --bg-navbar: rgba(15, 15, 15, 0.95);
+      --bg-card: rgba(15, 15, 15, 0.9);
+      --border-light: rgba(255, 255, 255, 0.1);
+      --shadow-strong: rgba(0, 0, 0, 0.5);
+      --shadow-brand: rgba(255, 152, 0, 0.3);
+    }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     body {
-      font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom right, #0f0f0f, #1f1f1f);
-      color: #ffffff;
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-light);
       min-height: 100vh;
-      padding: 0 0 40px;
+      padding-bottom: 40px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
     }
-
-    /* Navbar */
+    .background-carousel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: -2; 
+      overflow: hidden;
+    }
+    .background-carousel .carousel-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      animation: fadeImage 18s infinite; 
+    }
+    .background-carousel .carousel-image:nth-child(1) { animation-delay: 0s; }
+    .background-carousel .carousel-image:nth-child(2) { animation-delay: 6s; }
+    .background-carousel .carousel-image:nth-child(3) { animation-delay: 12s; }
+    @keyframes fadeImage {
+      0%   { opacity: 0; }
+      15%  { opacity: 1; } 
+      85%  { opacity: 1; } 
+      100% { opacity: 0; } 
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.75); 
+      z-index: -1; 
+    }
     nav {
       width: 100%;
       padding: 16px 5%;
-      background: rgba(15, 15, 15, 0.95);
+      background: var(--bg-navbar);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 20px var(--shadow-strong);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
       border-bottom: 1px solid #ff660050;
     }
-
     .nav-left {
       display: flex;
       align-items: center;
       gap: 15px;
     }
-
     .nav-left .logo-text {
       font-size: 1.8rem;
-      font-weight: 700;
-      color: #ff9800;
-      background: linear-gradient(to right, #ff9800, #ff6600);
+      font-weight: 600;
+      color: var(--primary-orange);
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
     .nav-right {
       display: flex;
       align-items: center;
     }
-
     .nav-right .logout-btn {
       color: #fff;
       text-decoration: none;
@@ -65,185 +112,179 @@
       background: linear-gradient(to right, #ff4d4d, #ff7a18);
       transition: all 0.3s ease;
     }
-
     .nav-right .logout-btn:hover {
       background: linear-gradient(to right, #ff1a1a, #ff6600);
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
     }
-
-    /* Main Content */
     .main-content {
       max-width: 1200px;
       margin: 0 auto;
       padding: 40px 5%;
+      width: 100%;
+      flex-grow: 1;
     }
-
     .welcome-section {
       text-align: center;
       margin-bottom: 60px;
     }
-
-    h2 {
-      font-size: 2.5rem;
-      color: #ff6600;
+    .welcome-section h2 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--primary-orange);
       margin-bottom: 15px;
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-
-    .tagline {
+    .welcome-section .tagline {
       font-size: 1.2rem;
-      color: #aaa;
-      max-width: 600px;
+      color: var(--text-muted);
+      max-width: 700px;
       margin: 0 auto;
+      line-height: 1.6;
     }
-
-    /* 3-column Grid Layout */
     .card-container {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 30px;
       width: 100%;
     }
-
     .card {
-      background: #1a1a1a;
+      background: var(--bg-card);
+      backdrop-filter: blur(5px);
       padding: 30px;
       border-radius: 16px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-      border: 1px solid #333;
+      box-shadow: 0 8px 25px var(--shadow-strong);
+      transition: all 0.3s ease-in-out;
+      border: 1px solid var(--border-light);
       display: flex;
       flex-direction: column;
       height: 100%;
     }
-
     .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 15px 30px rgba(255, 115, 0, 0.2);
-      border-color: #ff6600;
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 15px 35px var(--shadow-brand);
+      border-color: var(--primary-orange);
     }
-
     .card-icon {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       margin-bottom: 20px;
-      color: #ff9800;
+      color: var(--primary-orange);
+      text-align: center;
     }
-
     .card-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #ff9800;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--primary-orange);
       margin-bottom: 15px;
+      text-align: center;
     }
-
     .card-desc {
       font-size: 1rem;
       color: #ddd;
       margin-bottom: 25px;
-      line-height: 1.6;
+      line-height: 1.7;
       flex-grow: 1;
+      text-align: center;
     }
-
     .card-btn {
-      padding: 12px 20px;
+      padding: 12px 25px;
       font-size: 1rem;
-      color: #fff;
-      background: linear-gradient(to right, #7c3aed, #a855f7);
+      color: var(--text-dark);
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
       border: none;
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.3s ease;
       font-weight: 600;
       width: 100%;
+      text-align: center;
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-
     .card-btn:hover {
-      background: linear-gradient(to right, #a855f7, #7c3aed);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+      background: linear-gradient(to right, var(--primary-orange-dark), var(--primary-orange));
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 15px var(--shadow-brand);
     }
-
-    /* Remove link underlines */
     a {
       text-decoration: none;
       color: inherit;
     }
-
-    /* Responsive Design */
     @media (max-width: 1100px) {
       .card-container {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       }
     }
-
     @media (max-width: 768px) {
       .card-container {
         grid-template-columns: 1fr;
       }
-      
-      nav {
-        padding: 12px 5%;
-      }
-      
-      .nav-left .logo-text {
-        font-size: 1.5rem;
-      }
-      
-      h2 {
-        font-size: 2rem;
-      }
-      
-      .tagline {
-        font-size: 1rem;
-      }
+      nav { padding: 12px 5%; }
+      .nav-left .logo-text { font-size: 1.5rem; }
+      .welcome-section h2 { font-size: 2.2rem; }
+      .welcome-section .tagline { font-size: 1.1rem; }
+      .card-icon { font-size: 2.5rem; }
+      .card-title { font-size: 1.4rem; }
+    }
+    @media (max-width: 600px) {
+        .welcome-section h2 { font-size: 2rem; }
+        .welcome-section .tagline { font-size: 1rem; }
+        .card-icon { font-size: 2.2rem; }
+        .card-title { font-size: 1.3rem; }
+        .card-desc { font-size: 0.95rem; }
+        .card-btn { font-size: 0.95rem; padding: 10px 20px; }
     }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <!-- Navbar -->
+  <div class="background-carousel">
+    <div class="carousel-image" style="background-image: url('assets/stock8.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stock7.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stock9.jpg');"></div>
+  </div>
   <nav>
     <div class="nav-left">
       <span class="logo-text">CampusConnect</span>
     </div>
     <div class="nav-right">
-      <a href="index.html" class="logout-btn">Logout</a>
+      <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
   </nav>
-
-  <!-- Main Content -->
   <div class="main-content">
     <div class="welcome-section">
       <h2>Club Dashboard</h2>
-      <p class="tagline">Manage your club efficiently with our comprehensive tools</p>
+      <p class="tagline">Empower your club's presence and activities with our dedicated management tools.</p>
     </div>
-
     <div class="card-container">
       <a href="manage_announcements.html" class="card">
         <div class="card-icon">
           <i class="fas fa-bullhorn"></i>
         </div>
         <h3 class="card-title">Manage Announcements</h3>
-        <p class="card-desc">Create, edit, and publish announcements to keep your members informed about upcoming events and important updates.</p>
-        <button class="card-btn">Manage</button>
+        <p class="card-desc">Create, edit, and publish announcements to keep your members and the campus community informed about important updates and news.</p>
+        <button class="card-btn"><i class="fas fa-edit"></i> Manage</button>
       </a>
-
       <a href="manage_activities.html" class="card">
         <div class="card-icon">
           <i class="fas fa-calendar-alt"></i>
         </div>
         <h3 class="card-title">Manage Activities</h3>
-        <p class="card-desc">Organize and schedule your club's events, workshops, and meetings with our activity management tools.</p>
-        <button class="card-btn">Organize</button>
+        <p class="card-desc">Organize, schedule, and promote your club's events, workshops, meetings, and competitions with ease.</p>
+        <button class="card-btn"><i class="fas fa-cogs"></i> Organize</button>
       </a>
-
       <a href="edit_club_profile.html" class="card">
         <div class="card-icon">
-          <i class="fas fa-edit"></i>
+          <i class="fas fa-id-card"></i>
         </div>
         <h3 class="card-title">Edit Club Profile</h3>
-        <p class="card-desc">Update your club's information, description, and contact details to attract new members.</p>
-        <button class="card-btn">Update</button>
+        <p class="card-desc">Update your club's information, description, logo, and contact details to maintain an engaging and accurate profile.</p>
+        <button class="card-btn"><i class="fas fa-user-edit"></i> Update Profile</button>
       </a>
     </div>
   </div>

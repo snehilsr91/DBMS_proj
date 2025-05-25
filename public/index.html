@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CampusConnect</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -14,26 +15,64 @@
 
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(-45deg, #1a1a1a, #2e1e4d, #3b3b3b, #472183);
-      background-size: 400% 400%;
-      animation: gradientBG 16s ease infinite;
       color: #f0f0f0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      position: relative; /* For z-indexing of background elements */
     }
 
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    /* Background Image Carousel */
+    .background-carousel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: -2; /* Behind overlay and content */
+      overflow: hidden;
+    }
+
+    .background-carousel .carousel-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      animation: fadeImage 18s infinite; /* 6s per image * 3 images */
+    }
+
+    .background-carousel .carousel-image:nth-child(1) { animation-delay: 0s; }
+    .background-carousel .carousel-image:nth-child(2) { animation-delay: 6s; }
+    .background-carousel .carousel-image:nth-child(3) { animation-delay: 12s; }
+
+    @keyframes fadeImage {
+      0%   { opacity: 0; }
+      15%  { opacity: 1; } /* Fade in duration */
+      85%  { opacity: 1; } /* Hold duration */
+      100% { opacity: 0; } /* Fade out duration */
+    }
+
+    /* Dark overlay for better text readability over carousel */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.65); /* Adjust darkness as needed */
+      z-index: -1; /* Between carousel and content */
     }
 
     /* Enhanced Navbar */
     nav {
       width: 100%;
       padding: 16px 5%;
-      background: rgba(15, 15, 15, 0.95);
+      background: rgba(15, 15, 15, 0.95); /* Kept original background */
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -52,7 +91,7 @@
 
     .nav-left .logo-text {
       font-size: 1.8rem;
-      font-weight: 700;
+      font-weight: 600; /* CHANGED FROM 700 to 600 */
       color: #ff9800;
       background: linear-gradient(to right, #ff9800, #ff6600);
       background-clip: text;
@@ -80,37 +119,127 @@
       background: rgba(255, 152, 0, 0.1);
     }
 
-    .content {
-      flex: 1;
+    /* Hero Section */
+    .hero-section {
+      padding: 120px 5% 100px; /* Adjusted padding */
+      position: relative;
+      overflow: hidden;
       display: flex;
-      flex-direction: column;
-      padding: 40px 5%;
-      gap: 30px;
-      max-width: 1400px;
-      margin: 0 auto;
+      justify-content: center; /* Center hero-container */
+      align-items: center;
+      min-height: calc(80vh - 70px); /* Adjust based on nav height if needed for first view */
+    }
+    
+    .hero-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between; /* For potential right-side element */
       width: 100%;
+      max-width: 1200px; /* Max width of hero content area */
     }
 
-    .welcome-panel {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
-      border-left: 5px solid #ff9800;
-      padding: 30px;
-      border-radius: 16px;
-      font-size: 1.2rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      text-align: center;
-      transition: transform 0.3s ease;
+    .hero-content {
+      flex-basis: 65%; /* Content takes up more space */
+      text-align: left; /* Align text to left */
+      opacity: 0; /* Initial state for animation */
+      animation: fadeInUp 1s ease 0.1s forwards;
+    }
+    
+    .hero-visual-placeholder { /* Placeholder for right side, can be styled or filled later */
+        flex-basis: 30%;
     }
 
-    .welcome-panel:hover {
+    .hero-content h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(to right, #ff9800, #ff6600);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-content p {
+      font-size: 1.3rem;
+      margin-bottom: 40px;
+      opacity: 0.9;
+      max-width: 650px; /* Constrain paragraph width */
+      line-height: 1.6;
+      animation: fadeInUp 1s ease 0.3s forwards; /* Adjusted delay */
+      opacity: 0; /* Initial state for animation */
+    }
+
+    .btn-get-started {
+      background: linear-gradient(to right, #ff9800, #ff6600);
+      color: #121212;
+      padding: 15px 40px;
+      border-radius: 10px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+      text-decoration: none;
+      display: inline-block;
+      animation: fadeInUp 1s ease 0.5s forwards; /* Adjusted delay */
+      opacity: 0; /* Initial state for animation */
+    }
+
+    .btn-get-started:hover {
       transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(255, 152, 0, 0.4);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Portals Section */
+    .portals-section {
+      padding: 60px 5%;
+      position: relative;
+    }
+
+    .section-title {
+      margin-bottom: 50px;
+      text-align: center;
+      animation: fadeInUp 1s ease; /* Re-using fadeInUp for section title */
+    }
+
+    .section-title h2 {
+      font-weight: 700;
+      margin-bottom: 15px;
+      font-size: 2.2rem;
+      background: linear-gradient(to right, #ff9800, #ff6600);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .panel-row {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    /* Styling for the <a> tags wrapping panels */
+    .panel-row a {
+      text-decoration: none;
+      color: inherit;
+      display: block; /* Ensure the <a> tag takes up the full grid cell space */
+      height: 100%; /* Ensure the <a> tag fills the panel height for consistent click area */
+    }
+    .panel-row a:hover, .panel-row a:focus {
+        text-decoration: none; /* Remove underline on hover/focus */
     }
 
     .panel {
@@ -126,9 +255,17 @@
       transition: all 0.4s ease;
       position: relative;
       overflow: hidden;
-      height: 100%;
+      height: 100%; /* Ensures panel fills the 'a' tag height */
       min-height: 300px;
+      animation: fadeInUp 0.6s ease forwards; /* Added forwards */
+      opacity: 0; /* Initial state for animation */
     }
+    
+    /* To apply animation delay to the whole card (a > panel), target the 'a' tags */
+    .panel-row a:nth-of-type(1) .panel { animation-delay: 0.2s; }
+    .panel-row a:nth-of-type(2) .panel { animation-delay: 0.4s; }
+    .panel-row a:nth-of-type(3) .panel { animation-delay: 0.6s; }
+
 
     .panel::before {
       content: '';
@@ -153,13 +290,18 @@
     }
 
     .panel-icon {
-      font-size: 3rem;
-      margin-bottom: 20px;
+      font-size: 3.5rem;
+      margin-bottom: 25px;
       color: #ff9800;
+      transition: transform 0.3s ease;
+    }
+
+    .panel:hover .panel-icon {
+      transform: scale(1.1);
     }
 
     .panel h3 {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       color: #ffffff;
       margin-bottom: 15px;
       text-align: center;
@@ -169,7 +311,7 @@
       color: #cccccc;
       text-align: center;
       margin-bottom: 25px;
-      font-size: 1rem;
+      font-size: 1.05rem;
       line-height: 1.6;
     }
 
@@ -180,53 +322,27 @@
       background: linear-gradient(to right, #ff9800, #ff6600);
       border: none;
       border-radius: 10px;
-      cursor: pointer;
+      cursor: pointer; /* Remains, though parent <a> handles click */
       transition: all 0.3s ease;
       font-weight: 600;
+      pointer-events: none; /* Prevents button from interfering with parent <a> click, optional */
     }
 
-    .panel-btn:hover {
+    .panel-btn:hover { /* This hover effect will still apply visually if not for pointer-events: none */
       background: linear-gradient(to right, #ff6600, #ff9800);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 152, 0, 0.4);
     }
 
-    a {
-      text-decoration: none;
-      color: inherit;
+    /* Floating Animation for panel icons */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); } /* Reduced float amount */
+      100% { transform: translateY(0px); }
     }
 
-    /* Decorative elements */
-    .decor-blob {
-      position: fixed;
-      border-radius: 50%;
-      opacity: 0.15;
-      filter: blur(80px);
-      z-index: -1;
-    }
-
-    .blob1 {
-      background: #6a1b9a;
-      width: 400px;
-      height: 400px;
-      top: 10%;
-      left: 5%;
-    }
-
-    .blob2 {
-      background: #ff9800;
-      width: 350px;
-      height: 350px;
-      bottom: 10%;
-      right: 5%;
-    }
-
-    .blob3 {
-      background: #3f51b5;
-      width: 300px;
-      height: 300px;
-      top: 50%;
-      right: 15%;
+    .floating {
+      animation: float 6s ease-in-out infinite;
     }
 
     .footer {
@@ -235,7 +351,7 @@
       font-size: 0.95rem;
       color: #cccccc;
       background: linear-gradient(90deg, #181120, #1e1625);
-      margin-top: 40px;
+      margin-top: 40px; 
       box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.5);
     }
 
@@ -245,13 +361,30 @@
       vertical-align: middle;
     }
 
-    @media (max-width: 1000px) {
-      .panel-row {
-        grid-template-columns: 1fr;
+    @media (max-width: 768px) {
+      .hero-container {
+        flex-direction: column; 
+        text-align: center; 
+      }
+      .hero-content {
+        flex-basis: 100%; 
+        text-align: center; 
+        margin-bottom: 30px; 
+      }
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+      .hero-content p {
+        font-size: 1.1rem;
+        max-width: 100%; 
+        text-align: center;
+      }
+      .hero-visual-placeholder {
+        display: none; 
       }
       
-      .panel {
-        min-height: 250px;
+      .panel-row {
+        grid-template-columns: 1fr;
       }
       
       nav {
@@ -272,6 +405,13 @@
 </head>
 <body>
 
+  <!-- Background Image Carousel -->
+  <div class="background-carousel">
+    <div class="carousel-image" style="background-image: url('assets/stock1.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stock2.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stock3.jpg');"></div>
+  </div>
+
   <!-- Enhanced Navigation Bar -->
   <nav>
     <div class="nav-left">
@@ -284,45 +424,57 @@
     </div>
   </nav>
 
-  <!-- Decorative blobs -->
-  <div class="decor-blob blob1"></div>
-  <div class="decor-blob blob2"></div>
-  <div class="decor-blob blob3"></div>
-
-  <div class="content">
-    <div class="welcome-panel">
-      Welcome to <strong>CampusConnect</strong> — your gateway to academic resources, clubs, and career preparation.
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1>CampusConnect</h1>
+            <p>Your gateway to academic excellence, vibrant campus life, and career success. Connect with resources, clubs, and opportunities tailored for your university journey.</p>
+            <a href="#portals" class="btn-get-started">Get Started</a>
+        </div>
+        <div class="hero-visual-placeholder">
+        </div>
     </div>
+  </section>
 
+  <!-- Portals Section -->
+  <section class="portals-section" id="portals">
+    <div class="section-title">
+      <h2>Explore Our Hubs</h2>
+    </div>
+    
     <div class="panel-row">
+      <!-- Panel 1: Student -->
       <a href="student_auth.html">
         <div class="panel">
-          <div class="panel-icon">👨‍🎓</div>
+          <div class="panel-icon floating"><i class="fas fa-user-graduate"></i></div>
           <h3>Student Portal</h3>
           <p>Access mock placements, quizzes, learning resources, and track your academic progress throughout the semester.</p>
           <button class="panel-btn">Enter Portal</button>
         </div>
       </a>
       
+      <!-- Panel 2: Club -->
       <a href="club_auth.html">
         <div class="panel">
-          <div class="panel-icon">🏛️</div>
+          <div class="panel-icon floating"><i class="fas fa-chess-queen"></i></div>
           <h3>Club Portal</h3>
           <p>Manage events, share resources, connect with students, and organize activities for your club members.</p>
           <button class="panel-btn">Enter Portal</button>
         </div>
       </a>
       
+      <!-- Panel 3: Admin -->
       <a href="admin_login.html">
         <div class="panel">
-          <div class="panel-icon">🛠️</div>
+          <div class="panel-icon floating"><i class="fas fa-tools"></i></div>
           <h3>Admin Portal</h3>
           <p>Oversee platform activity, manage user accounts, and handle all administrative operations.</p>
           <button class="panel-btn">Enter Portal</button>
         </div>
-      </a>      
+      </a>
     </div>
-  </div>
+  </section>
 
   <div class="footer">
     Built with <span>❤️</span> by Team CampusConnect

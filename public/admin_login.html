@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Admin Login | CampusConnect</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -12,26 +12,54 @@
       margin: 0;
       padding: 0;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(-45deg, #1a1a1a, #2e1e4d, #3b3b3b, #472183);
-      background-size: 400% 400%;
-      animation: gradientBG 16s ease infinite;
       color: white;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
+      position: relative;
     }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    .background-carousel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: -2;
+      overflow: hidden;
     }
-
-    /* Enhanced Navbar - Exactly matches student/club auth */
+    .background-carousel .carousel-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      animation: fadeImage 18s infinite;
+    }
+    .background-carousel .carousel-image:nth-child(1) { animation-delay: 0s; }
+    .background-carousel .carousel-image:nth-child(2) { animation-delay: 6s; }
+    .background-carousel .carousel-image:nth-child(3) { animation-delay: 12s; }
+    @keyframes fadeImage {
+      0%   { opacity: 0; }
+      15%  { opacity: 1; }
+      85%  { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: -1;
+    }
     nav {
       width: 100%;
       padding: 16px 5%;
@@ -42,115 +70,82 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
       border-bottom: 1px solid #ff660050;
     }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
+    .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-left .logo-text {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #ff9800;
+      font-size: 1.8rem; font-weight: 600; color: #ff9800;
       background: linear-gradient(to right, #ff9800, #ff6600);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
+    .nav-right { display: flex; align-items: center; gap: 20px; }
     .nav-right a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 8px 16px;
-      border-radius: 5px;
-      transition: all 0.3s ease;
+      color: #fff; text-decoration: none; font-weight: 600;
+      padding: 8px 16px; border-radius: 5px; transition: all 0.3s ease;
     }
-
-    .nav-right a:hover {
-      color: #ff9800;
-      background: rgba(255, 152, 0, 0.1);
-    }
-
-    .nav-right a.active {
-      background: linear-gradient(to right, #ff9800, #ff6600);
-      color: #fff;
-    }
-
-    /* Main Content - Now perfectly aligned */
+    .nav-right a:hover { color: #ff9800; background: rgba(255, 152, 0, 0.1); }
+    .nav-right a.active { background: linear-gradient(to right, #ff9800, #ff6600); color: #fff; }
     .auth-wrapper {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 40px 20px;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
+      flex: 1; display: flex; justify-content: center; align-items: center;
+      padding: 40px 20px; width: 100%;
     }
-
     .container {
       position: relative;
-      width: 850px; /* Matches student/club auth width */
-      max-width: 100%;
-      height: 450px;
-      background: #1e1e2f;
+      width: 450px;
+      max-width: 90%;
+      min-height: 420px;
+      background: rgba(15, 15, 15, 0.9);
+      backdrop-filter: blur(5px);
       border-radius: 20px;
-      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.5);
-      overflow: hidden;
-      border: 1px solid #333;
-      margin: 0 auto; /* Center the container */
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
-
     .form-container {
-      position: absolute;
-      top: 0;
-      height: 100%;
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 0 50px;
       text-align: center;
-      z-index: 2;
     }
-
-    h1 {
-      margin-bottom: 30px;
-      font-size: 2rem;
+    .form-container h1 {
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      font-weight: 600;
       color: #ff9800;
       width: 100%;
     }
-
+    .form-container h1 i {
+        margin-right: 10px;
+    }
     form {
       width: 100%;
-      max-width: 400px; /* Same as other auth forms */
     }
-
     form input {
-      margin: 12px 0;
-      padding: 14px 20px;
+      margin: 10px 0;
+      padding: 12px 15px;
       width: 100%;
       border-radius: 10px;
       border: 1px solid #5e5e5e;
       background: #2b2b3d;
       color: #fff;
-      font-size: 1rem;
-      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
-
-    button {
+    form input:hover {
+      border-color: #8a8a9e;
+    }
+    form input:focus {
+      outline: none;
+      border-color: #ff9800;
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.25);
+    }
+    .form-container form button {
       border-radius: 10px;
       border: none;
       padding: 14px 45px;
@@ -158,67 +153,76 @@
       margin-top: 25px;
       cursor: pointer;
       transition: all 0.3s ease;
-      background: linear-gradient(to right, #9c27b0, #7b1fa2);
-      color: white;
+      background: linear-gradient(to right, #ff9800, #ff6600);
+      color: #121212;
       font-size: 1rem;
       width: 100%;
     }
-
-    /* Footer - Exact match */
+    .form-container form button:hover {
+      background: linear-gradient(to right, #ff6600, #ff9800);
+      box-shadow: 0 8px 15px rgba(255, 152, 0, 0.3);
+      transform: translateY(-2px);
+    }
     footer {
-      background: linear-gradient(90deg, #181120, #1e1625);
-      color: #e0e0e0;
-      text-align: center;
-      padding: 25px 0;
-      font-size: 14px;
-      font-family: 'Poppins', sans-serif;
-      box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.5);
-      margin-top: auto;
-      letter-spacing: 0.3px;
+      background: rgba(15, 15, 15, 0.95); 
+      color: #e0e0e0; text-align: center;
+      padding: 25px 0; font-size: 14px; font-family: 'Poppins', sans-serif;
+      box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.5); margin-top: auto; letter-spacing: 0.3px;
+    }
+    footer span { color: #ff4d4d; font-size: 16px; vertical-align: middle; }
+    .flash-message-area {
       width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.9em;
+      min-height: 20px;
+      display: none;
+      border: 1px solid transparent;
     }
-
-    /* Responsive adjustments */
-    @media (max-width: 900px) {
-      .container {
-        width: 100%;
-        height: 400px;
-      }
-      
-      .form-container {
-        padding: 0 30px;
-      }
+    .flash-message-area.error {
+      background-color: rgba(255, 77, 77, 0.15);
+      color: #ff6b6b;
+      border-color: rgba(255, 77, 77, 0.4);
+      display: block;
     }
-
+    .flash-message-area.success {
+      background-color: rgba(76, 175, 80, 0.15);
+      color: #69f0ae;
+      border-color: rgba(76, 175, 80, 0.4);
+      display: block;
+    }
     @media (max-width: 768px) {
-      nav {
-        flex-direction: column;
-        padding: 12px 5%;
+      nav { flex-direction: column; padding: 12px 5%; }
+      .nav-left { margin-bottom: 10px; }
+      .nav-right { width: 100%; justify-content: space-around; gap: 5px; }
+      .nav-right a { padding: 6px 10px; font-size: 0.9rem; }
+      .container {
+        min-height: auto;
+        padding: 25px 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        background: rgba(15, 15, 15, 0.95);
       }
-
-      .nav-left {
-        margin-bottom: 10px;
-      }
-
-      .nav-right {
-        width: 100%;
-        justify-content: space-around;
-        gap: 5px;
-      }
-
-      .nav-right a {
-        padding: 6px 10px;
-        font-size: 0.9rem;
-      }
+      .form-container h1 { font-size: 1.6rem; margin-bottom: 20px; }
+      form input { padding: 10px 12px; font-size: 0.9rem; }
+      .form-container form button { padding: 12px 30px; font-size: 0.95rem; margin-top: 20px;}
+    }
+    @media (max-width: 480px) {
+      .container { width: 95%; padding: 20px 15px;}
+      .form-container h1 { font-size: 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <!-- Navigation Bar -->
+  <div class="background-carousel">
+    <div class="carousel-image" style="background-image: url('assets/stocka1.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stock5.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stock3.jpg');"></div>
+  </div>
   <nav>
-    <div class="nav-left">
-      <span class="logo-text">CampusConnect</span>
-    </div>
+    <div class="nav-left"> <span class="logo-text">CampusConnect</span> </div>
     <div class="nav-right">
       <a href="index.html">Home</a>
       <a href="student_auth.html">Student</a>
@@ -226,13 +230,12 @@
       <a href="admin_login.html" class="active">Admin</a>
     </div>
   </nav>
-
-  <!-- Main Auth Panel -->
   <div class="auth-wrapper">
     <div class="container">
       <div class="form-container">
         <form method="POST" action="/admin-login">
-          <h1><i class="fas fa-lock"></i> Admin Login</h1>
+          <h1><i class="fas fa-user-shield"></i> Admin Login</h1>
+          <div id="login-message-area" class="flash-message-area"></div>
           <input name="username" placeholder="Username" required />
           <input name="password" type="password" placeholder="Password" required />
           <button type="submit">Login</button>
@@ -240,10 +243,37 @@
       </div>
     </div>
   </div>
-
-  <!-- Footer -->
-  <footer>
-    Built with <span>❤️</span> by Team CampusConnect
-  </footer>
+  <footer> Built with <span>❤️</span> by Team CampusConnect </footer>
+  <script>
+    let loginMessageTimeoutId = null;
+    const MESSAGE_DISPLAY_DURATION = 5000;
+    window.addEventListener('DOMContentLoaded', (event) => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const loginError = urlParams.get('loginError');
+      const loginMessageDiv = document.getElementById('login-message-area');
+      function showAndAutoHideMessage(messageDiv, messageText, messageType, timeoutIdRef) {
+        if (timeoutIdRef.id) {
+          clearTimeout(timeoutIdRef.id);
+        }
+        messageDiv.textContent = messageText;
+        messageDiv.className = `flash-message-area ${messageType}`;
+        messageDiv.style.display = 'block';
+        timeoutIdRef.id = setTimeout(() => {
+          messageDiv.textContent = '';
+          messageDiv.className = 'flash-message-area';
+          messageDiv.style.display = 'none';
+          timeoutIdRef.id = null;
+        }, MESSAGE_DISPLAY_DURATION);
+      }
+      const loginTimeoutRef = { id: loginMessageTimeoutId };
+      if (loginError) {
+        showAndAutoHideMessage(loginMessageDiv, loginError, 'error', loginTimeoutRef);
+      }
+      if (loginError) {
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+    });
+  </script>
 </body>
 </html>

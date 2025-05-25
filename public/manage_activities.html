@@ -4,349 +4,406 @@
   <meta charset="UTF-8">
   <title>Manage Activities | CampusConnect</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    :root {
+      --primary-orange: #ff9800;
+      --primary-orange-dark: #ff6600;
+      --text-light: #f0f0f0;
+      --text-dark: #121212;
+      --text-muted: #ccc;
+      --bg-navbar: rgba(15, 15, 15, 0.95);
+      --bg-card: rgba(15, 15, 15, 0.9);
+      --bg-list-item: rgba(20, 20, 25, 0.85);
+      --bg-element-dark: #2b2b3d;
+      --border-light: rgba(255, 255, 255, 0.1);
+      --border-medium: #5e5e5e;
+      --color-danger: #ff4d4d;
+      --color-danger-dark: #ff1a1a;
+      --shadow-strong: rgba(0, 0, 0, 0.5);
+      --shadow-brand: rgba(255, 152, 0, 0.3);
+    }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     body {
-      font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom right, #0f0f0f, #1f1f1f);
-      color: #ffffff;
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-light);
       min-height: 100vh;
       padding: 0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
     }
-
-    /* Navbar */
+    .background-carousel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: -2;
+      overflow: hidden;
+    }
+    .background-carousel .carousel-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      animation: fadeImage 18s infinite;
+    }
+    .background-carousel .carousel-image:nth-child(1) { animation-delay: 0s; }
+    .background-carousel .carousel-image:nth-child(2) { animation-delay: 6s; }
+    .background-carousel .carousel-image:nth-child(3) { animation-delay: 12s; }
+    @keyframes fadeImage {
+      0%   { opacity: 0; }
+      15%  { opacity: 1; }
+      85%  { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      z-index: -1;
+    }
     nav {
       width: 100%;
       padding: 16px 5%;
-      background: rgba(15, 15, 15, 0.95);
+      background: var(--bg-navbar);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 20px var(--shadow-strong);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
       border-bottom: 1px solid #ff660050;
     }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
+    .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-left .logo-text {
       font-size: 1.8rem;
-      font-weight: 700;
-      color: #ff9800;
-      background: linear-gradient(to right, #ff9800, #ff6600);
+      font-weight: 600;
+      color: var(--primary-orange);
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-    }
-
+    .nav-right { display: flex; align-items: center; }
     .nav-right .logout-btn {
-      color: #fff;
+      color: var(--text-dark);
       text-decoration: none;
       font-weight: 600;
       padding: 10px 20px;
       border-radius: 50px;
-      background: linear-gradient(to right, #ff4d4d, #ff7a18);
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
       transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-
     .nav-right .logout-btn:hover {
-      background: linear-gradient(to right, #ff1a1a, #ff6600);
+      background: linear-gradient(to right, var(--primary-orange-dark), var(--primary-orange));
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+      box-shadow: 0 5px 15px var(--shadow-brand);
     }
-
-    /* Main Content */
     .main-content {
-      max-width: 1200px;
+      max-width: 900px;
       margin: 0 auto;
-      padding: 40px 5%;
+      padding: 40px 5% 60px;
+      width: 100%;
+      flex-grow: 1;
     }
-
-    h2 {
-      font-size: 2.2rem;
-      color: #ff6600;
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: 700;
       text-align: center;
       margin-bottom: 40px;
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
-
-    /* Form Card */
-    .form-card {
-      background: #1a1a1a;
-      padding: 30px;
+    .form-card, #edit-form {
+      background: var(--bg-card);
+      backdrop-filter: blur(5px);
+      padding: 30px 35px;
       border-radius: 16px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      max-width: 600px;
+      box-shadow: 0 8px 25px var(--shadow-strong);
+      max-width: 700px;
       margin: 0 auto 50px;
-      border: 1px solid #333;
+      border: 1px solid var(--border-light);
     }
-
+    .form-card h3, #edit-form h3 {
+      color: var(--primary-orange);
+      font-size: 1.6rem;
+      margin-bottom: 25px;
+      text-align: center;
+      font-weight: 600;
+    }
     input[type="text"], 
-    input[type="url"],
-    textarea {
+    input[type="url"] {
       width: 100%;
       padding: 14px;
       margin-bottom: 20px;
       border-radius: 10px;
-      border: 1px solid #444;
+      border: 1px solid var(--border-medium);
       font-size: 1rem;
-      background-color: #2a2a2a;
-      color: #fff;
-      transition: border-color 0.3s ease;
+      background-color: var(--bg-element-dark);
+      color: var(--text-light);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
-
     input[type="text"]:focus, 
-    input[type="url"]:focus,
-    textarea:focus {
+    input[type="url"]:focus {
       outline: none;
-      border-color: #ff6600;
+      border-color: var(--primary-orange);
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.25);
     }
-
-    /* Buttons */
     .btn {
-      padding: 12px 24px;
+      padding: 12px 28px;
       font-size: 1rem;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
       font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-
     .btn-primary {
-      background: linear-gradient(to right, #7c3aed, #a855f7);
-      color: #fff;
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
+      color: var(--text-dark);
     }
-
     .btn-primary:hover {
-      background: linear-gradient(to right, #a855f7, #7c3aed);
+      background: linear-gradient(to right, var(--primary-orange-dark), var(--primary-orange));
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+      box-shadow: 0 5px 15px var(--shadow-brand);
     }
-
     .btn-danger {
-      background: linear-gradient(to right, #ff4d4d, #ff7a18);
-      color: #fff;
+      background: linear-gradient(to right, var(--color-danger), var(--color-danger-dark));
+      color: white;
     }
-
     .btn-danger:hover {
-      background: linear-gradient(to right, #ff1a1a, #ff6600);
+      background: linear-gradient(to right, var(--color-danger-dark), var(--color-danger));
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+      box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
     }
-
-    /* Activity List */
-    .activity-list {
-      max-width: 900px;
-      margin: 0 auto;
+    .btn-secondary {
+      background: #4a4a5a;
+      color: white;
     }
-
+    .btn-secondary:hover {
+      background: #5a5a6a;
+      transform: translateY(-2px);
+    }
+    .activity-list-container {
+        margin-top: 50px;
+    }
+    .activity-list-title {
+        font-size: 1.8rem;
+        color: var(--primary-orange);
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ff980030;
+    }
     .activity-item {
-      background-color: #1a1a1a;
-      border-radius: 16px;
+      background-color: var(--bg-list-item);
+      backdrop-filter: blur(3px);
+      border-radius: 12px;
       padding: 25px;
       margin-bottom: 25px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      border: 1px solid #333;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+      border: 1px solid var(--border-light);
       transition: all 0.3s ease;
+      position: relative;
     }
-
     .activity-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(255, 115, 0, 0.15);
-      border-color: #ff6600;
+      transform: translateY(-5px) scale(1.01);
+      box-shadow: 0 10px 25px var(--shadow-brand);
+      border-color: var(--primary-orange);
     }
-
     .activity-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 15px;
       flex-wrap: wrap;
+      gap: 10px;
     }
-
     .activity-item h3 {
-      color: #ff9800;
+      color: var(--primary-orange);
       font-size: 1.4rem;
       margin: 0;
       flex-grow: 1;
+      font-weight: 600;
     }
-
     .activity-date {
-      color: #aaa;
-      font-size: 0.9rem;
-      background: #2a2a2a;
-      padding: 5px 10px;
-      border-radius: 50px;
-      margin-left: 15px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      background: rgba(255,255,255,0.05);
+      padding: 5px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
     }
-
     .activity-link {
-      color: #f97316;
+      color: var(--primary-orange-dark);
       text-decoration: none;
       word-break: break-all;
       display: inline-block;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       transition: color 0.3s ease;
+      font-weight: 500;
     }
-
     .activity-link:hover {
-      color: #ff9800;
+      color: var(--primary-orange);
       text-decoration: underline;
     }
-
+    .activity-link i {
+        margin-right: 6px;
+    }
     .activity-item .actions {
       display: flex;
       gap: 10px;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed var(--border-medium);
     }
-
-    /* Edit Form */
-    #edit-form {
-      display: none;
-      background: #1a1a1a;
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      max-width: 600px;
-      margin: 40px auto;
-      border: 1px solid #ff6600;
-    }
-
-    #edit-form h3 {
-      color: #ff9800;
-      font-size: 1.5rem;
-      margin-bottom: 25px;
-      text-align: center;
-    }
-
+    .actions .btn { padding: 8px 18px; font-size: 0.9rem; }
+    #edit-form { display: none; }
     .form-actions {
       display: flex;
       gap: 15px;
-      margin-top: 20px;
+      margin-top: 25px;
+      justify-content: flex-end;
     }
-
-    /* Responsive Design */
+    .empty-state-message {
+        text-align: center;
+        color: var(--text-muted);
+        padding: 30px;
+        background-color: var(--bg-list-item);
+        border-radius: 12px;
+        border: 1px dashed var(--border-medium);
+    }
     @media (max-width: 768px) {
-      .activity-header {
-        flex-direction: column;
-      }
-      
-      .activity-date {
-        margin-left: 0;
-        margin-top: 10px;
-      }
-      
-      .form-actions {
-        flex-direction: column;
-      }
-      
-      .btn {
-        width: 100%;
-      }
+      .page-title { font-size: 2rem; }
+      .form-card, #edit-form { padding: 25px; }
+      .form-card h3, #edit-form h3 { font-size: 1.4rem; }
+      .activity-list-title { font-size: 1.6rem; }
+      .activity-item h3 { font-size: 1.25rem; }
+      .form-actions { flex-direction: column; }
+      .btn { width: 100%; }
+      .actions .btn { width: auto; }
     }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <!-- Navbar -->
+  <div class="background-carousel">
+    <div class="carousel-image" style="background-image: url('assets/stock8.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stock7.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stock9.jpg');"></div>
+  </div>
   <nav>
     <div class="nav-left">
       <span class="logo-text">CampusConnect</span>
     </div>
     <div class="nav-right">
       <a href="club_home.html" class="logout-btn">
-        <i class="fas fa-arrow-left"></i> Back to Dashboard
+        <i class="fas fa-arrow-left"></i> Dashboard
       </a>
     </div>
   </nav>
-
-  <!-- Main Content -->
   <div class="main-content">
-    <h2>Manage Activities</h2>
-
-    <!-- Create Activity Form -->
-    <div class="form-card">
+    <h2 class="page-title"><i class="fas fa-calendar-plus"></i> Manage Club Activities</h2>
+    <div class="form-card" id="create-form-card">
+      <h3><i class="fas fa-plus-circle"></i> Create New Activity</h3>
       <form method="POST" action="/create-activity">
-        <input type="text" name="title" placeholder="Activity Title" required />
-        <input type="url" name="link" placeholder="Link (optional)" />
+        <input type="text" name="title" placeholder="Activity Title (e.g., Coding Workshop)" required />
+        <input type="url" name="link" placeholder="Activity Link (e.g., registration, details - optional)" />
         <button type="submit" class="btn btn-primary">
-          <i class="fas fa-plus"></i> Create Activity
+          <i class="fas fa-calendar-check"></i> Add Activity
         </button>
       </form>
     </div>
-
-    <!-- Edit Activity Form -->
     <div id="edit-form">
-      <h3>Edit Activity</h3>
+      <h3><i class="fas fa-edit"></i> Edit Activity</h3>
       <form id="edit-activity-form" method="POST" action="/edit-activity">
         <input type="hidden" name="id" id="edit-id">
         <input type="text" name="title" id="edit-title" placeholder="Activity Title" required />
         <input type="url" name="link" id="edit-link" placeholder="Link (optional)" />
         <div class="form-actions">
+          <button type="button" onclick="closeEditForm()" class="btn btn-secondary">Cancel</button>
           <button type="submit" class="btn btn-primary">Save Changes</button>
-          <button type="button" onclick="closeEditForm()" class="btn btn-danger">Cancel</button>
         </div>
       </form>
     </div>
-
-    <!-- Activity List -->
-    <div class="activity-list" id="activity-list"></div>
+    <div class="activity-list-container">
+        <h3 class="activity-list-title">Scheduled Activities</h3>
+        <div class="activity-list" id="activity-list">
+            <div class="empty-state-message">Loading activities...</div>
+        </div>
+    </div>
   </div>
-
   <script>
     async function loadActivities() {
       try {
         const res = await fetch('/api/club-activities');
+         if (!res.ok) {
+            const errorData = await res.json().catch(() => ({ error: 'Failed to fetch activities and parse error' }));
+            throw new Error(errorData.error || `HTTP error! status: ${res.status}`);
+        }
         const data = await res.json();
         const container = document.getElementById('activity-list');
         
-        // Reverse the array to show latest first and format dates
         const activities = [...data].reverse().map(activity => {
           const date = new Date(activity.created_at || activity.date_created);
           return {
             ...activity,
             formattedDate: date.toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
+              year: 'numeric', month: 'short', day: 'numeric',
+              hour: '2-digit', minute: '2-digit', hour12: true
             }),
             datetime: date.toISOString()
           };
         });
         
+        if (activities.length === 0) {
+            container.innerHTML = `<div class="empty-state-message">No activities scheduled yet. Add one using the form above!</div>`;
+            return;
+        }
+
         container.innerHTML = activities.map(a => `
           <div class="activity-item">
             <div class="activity-header">
               <h3>${a.title}</h3>
               <time class="activity-date" datetime="${a.datetime}">${a.formattedDate}</time>
             </div>
-            ${a.link ? `<a href="${a.link}" target="_blank" class="activity-link">
+            ${a.link ? `<a href="${a.link.startsWith('http') ? a.link : '//' + a.link}" target="_blank" rel="noopener noreferrer" class="activity-link">
               <i class="fas fa-link"></i> ${a.link}
-            </a>` : ''}
+            </a>` : '<p style="color:var(--text-muted); font-style:italic; margin-bottom:20px;">No link provided.</p>'}
             <div class="actions">
               <button onclick="openEditForm(${a.id}, \`${a.title.replace(/`/g, '\\`')}\`, \`${(a.link || '').replace(/`/g, '\\`')}\`)" 
                 class="btn btn-primary">
                 <i class="fas fa-edit"></i> Edit
               </button>
-              <form method="POST" action="/delete-activity">
+              <form method="POST" action="/delete-activity" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this activity?');">
                 <input type="hidden" name="id" value="${a.id}" />
                 <button type="submit" class="btn btn-danger">
                   <i class="fas fa-trash"></i> Delete
@@ -358,10 +415,9 @@
       } catch (error) {
         console.error('Error loading activities:', error);
         document.getElementById('activity-list').innerHTML = `
-          <div class="activity-item" style="color: #ff4d4d;">
-            Error loading activities. Please try again later.
-          </div>
-        `;
+           <div class="empty-state-message" style="color: var(--color-danger); border-color: var(--color-danger);">
+            Error loading activities: ${error.message}. Please try again later.
+          </div>`;
       }
     }
 
@@ -370,14 +426,16 @@
       document.getElementById('edit-title').value = title;
       document.getElementById('edit-link').value = link || '';
       document.getElementById('edit-form').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('create-form-card').style.display = 'none';
+      document.getElementById('edit-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function closeEditForm() {
       document.getElementById('edit-form').style.display = 'none';
+      document.getElementById('create-form-card').style.display = 'block';
+      document.getElementById('edit-activity-form').reset();
     }
 
-    // Load activities when page loads
     document.addEventListener('DOMContentLoaded', loadActivities);
   </script>
 </body>

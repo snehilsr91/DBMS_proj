@@ -3,451 +3,434 @@
 <head>
   <meta charset="UTF-8">
   <title>Performance Analytics | CampusConnect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    :root {
+      --primary-orange: #ff9800;
+      --primary-orange-dark: #ff6600;
+      --text-light: #f0f0f0;
+      --text-dark: #121212;
+      --text-muted: #ccc;
+      --bg-navbar: rgba(15, 15, 15, 0.95);
+      --bg-container: rgba(15, 15, 15, 0.9);
+      --bg-element-dark: #2b2b3d;
+      --bg-card-header: rgba(25, 25, 30, 0.85);
+      --border-light: rgba(255, 255, 255, 0.1);
+      --border-medium: #5e5e5e;
+      --shadow-strong: rgba(0, 0, 0, 0.5);
+      --shadow-brand: rgba(255, 152, 0, 0.3);
+      --color-beginner: #a0a0a0; /* Muted gray for beginner */
+      --color-intermediate: var(--primary-orange); /* Primary orange for intermediate */
+      --color-advanced: var(--primary-orange-dark); /* Darker orange for advanced */
+      --color-unrated: #343a40; /* Dark gray for unrated */
+    }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     body {
-      font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom right, #0f0f0f, #1f1f1f);
-      color: #ffffff;
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-light);
       min-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
     }
-
-    /* Navbar */
+    .background-carousel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: -2;
+      overflow: hidden;
+    }
+    .background-carousel .carousel-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      animation: fadeImage 18s infinite;
+    }
+    .background-carousel .carousel-image:nth-child(1) { animation-delay: 0s; }
+    .background-carousel .carousel-image:nth-child(2) { animation-delay: 6s; }
+    .background-carousel .carousel-image:nth-child(3) { animation-delay: 12s; }
+    @keyframes fadeImage {
+      0%   { opacity: 0; }
+      15%  { opacity: 1; }
+      85%  { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: -1;
+    }
     nav {
       width: 100%;
       padding: 16px 5%;
-      background: rgba(15, 15, 15, 0.95);
+      background: var(--bg-navbar);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 20px var(--shadow-strong);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1050;
       border-bottom: 1px solid #ff660050;
     }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
+    .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-left .logo-text {
       font-size: 1.8rem;
-      font-weight: 700;
-      color: #ff9800;
-      background: linear-gradient(to right, #ff9800, #ff6600);
+      font-weight: 600;
+      color: var(--primary-orange);
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-    }
-
+    .nav-right { display: flex; align-items: center; }
     .nav-right .back-btn {
-      color: #fff;
+      color: var(--text-dark);
       text-decoration: none;
       font-weight: 600;
       padding: 10px 20px;
       border-radius: 50px;
-      background: linear-gradient(to right, #7c3aed, #a855f7);
-      transition: all 0.3s ease;
-    }
-
-    .nav-right .back-btn:hover {
-      background: linear-gradient(to right, #a855f7, #7c3aed);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
-    }
-
-    .back-btn {
-      padding: 8px 16px;
-      background: linear-gradient(to right, #7c3aed, #a855f7);
-      color: white;
-      border: none;
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
       gap: 8px;
-      text-decoration: none;
     }
-
-    .back-btn:hover {
-      background: linear-gradient(to right, #a855f7, #7c3aed);
+    .nav-right .back-btn:hover {
+      background: linear-gradient(to right, var(--primary-orange-dark), var(--primary-orange));
       transform: translateY(-2px);
+      box-shadow: 0 5px 15px var(--shadow-brand);
     }
-
-    .badge-gradient {
-        background: linear-gradient(to right, #7c3aed, #a855f7);
-        color: white;
-        border: none;
-        }
-
-        .badge-gradient:hover {
-        background: linear-gradient(to right, #a855f7, #7c3aed);
-        }
-
-        .badge-outline-gradient {
-        background: linear-gradient(to right, #ff4d4d, #ff7a18);
-        color: white;
-        border: none;
-        }
-
-        .badge-outline-gradient:hover {
-        background: linear-gradient(to right, #ff1a1a, #ff6600);
-        }
-    /* Student Info Header */
     .student-info-header {
-      background: linear-gradient(to right, #1a1a1a, #2a2a2a);
-      padding: 1.5rem 0;
-      margin-bottom: 2rem;
-      border-bottom: 1px solid #333;
+      background: var(--bg-container);
+      backdrop-filter: blur(5px);
+      padding: 2rem 0;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border-light);
     }
+    .student-info-header h1 {
+        font-weight: 700;
+        background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .badge-custom {
+        padding: 0.5em 0.9em;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border-radius: 20px;
+        border: 1px solid transparent;
+    }
+    .badge-gradient-orange {
+        background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
+        color: var(--text-dark);
+    }
+    .badge-outline-orange {
+        color: var(--primary-orange);
+        border-color: var(--primary-orange);
+        background-color: transparent;
+    }
+    .club-badge {
+        background-color: rgba(255,255,255,0.1);
+        color: var(--text-light);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    .club-badge img { margin-right: 5px;}
 
-    /* Cards */
+    .btn-refresh {
+        background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
+        color: var(--text-dark);
+        border: none;
+        font-weight: 600;
+        padding: 0.6rem 1.2rem;
+    }
+    .btn-refresh:hover {
+        background: linear-gradient(to right, var(--primary-orange-dark), var(--primary-orange));
+        box-shadow: 0 4px 10px var(--shadow-brand);
+        transform: translateY(-2px);
+    }
     .card {
-      background: #1a1a1a;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      background: var(--bg-container);
+      backdrop-filter: blur(5px);
+      border-radius: 16px;
+      box-shadow: 0 8px 25px var(--shadow-strong);
       margin-bottom: 1.5rem;
-      border: 1px solid #333;
+      border: 1px solid var(--border-light);
       transition: all 0.3s ease;
-      position: relative; /* Added for border fix */
-      z-index: 1; /* Added for border fix */
+      color: var(--text-light);
     }
-
     .card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(255, 115, 0, 0.2);
-      border-color: #ff6600;
+      box-shadow: 0 12px 30px var(--shadow-brand);
+      border-color: var(--primary-orange);
     }
-
-    /* Fix for border corners */
-    .card::before {
-      content: '';
-      position: absolute;
-      top: -1px;
-      left: -1px;
-      right: -1px;
-      bottom: -1px;
-      border-radius: 12px;
-      border: 1px solid transparent;
-      z-index: -1;
-    }
-
-    .card:hover::before {
-      border-color: #ff6600;
-    }
-
     .card-header {
-      background: #2a2a2a;
-      border-bottom: 1px solid #333;
+      background: var(--bg-card-header);
+      border-bottom: 1px solid var(--border-light);
       font-weight: 600;
-      color: #ff9800;
+      color: var(--primary-orange);
       padding: 1rem 1.25rem;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
     }
-
+    .card-header h3, .card-header span { font-size: 1.1rem; }
     .card-body {
-      padding: 1.25rem;
-      color: #eee; /* Brighter text for better contrast */
+      padding: 1.5rem;
     }
-
-    /* Badges */
-    .badge-technical {
-      background-color: #7c3aed;
-      color: white;
-    }
-
-    .badge-hr {
-      background-color: #1cc88a;
-      color: white;
-    }
-
-    .badge-beginner {
-      background-color: #6c757d;
-      color: white;
-    }
-
-    .badge-intermediate {
-      background-color: #0dcaf0;
-      color: white;
-    }
-
-    .badge-advanced {
-      background-color: #198754;
-      color: white;
-    }
-    
-
-    /* Club Logo */
-    .club-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-right: 10px;
-      border: 2px solid #333;
-    }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 2rem;
-      color: #aaa;
-    }
-
-    .empty-state i {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      color: #555;
-    }
-
-    /* Loading Overlay */
-    #loadingOverlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .spinner-container {
-      display: flex;
-      justify-content: center;
-      padding: 2rem;
-    }
-
-    /* Navigation Pills */
     .nav-pills .nav-link {
-      color: #ddd;
-      background: #2a2a2a;
-      margin: 0 5px;
-    }
-
-    .nav-pills .nav-link.active {
-      background: linear-gradient(to right, #7c3aed, #a855f7);
-      color: white;
-    }
-
-    /* Charts */
-    .chart-container {
-      position: relative;
-      height: 250px;
-      width: 100%;
-    }
-
-    /* Buttons */
-    .btn-primary {
-      background: linear-gradient(to right, #7c3aed, #a855f7);
-      border: none;
-    }
-
-    .btn-primary:hover {
-      background: linear-gradient(to right, #a855f7, #7c3aed);
-    }
-
-    .btn-outline-primary {
-      color: #a855f7;
-      border-color: #a855f7;
-    }
-
-    .btn-outline-primary:hover {
-      background: #a855f7;
-      color: white;
-    }
-
-    .btn-outline-secondary {
-      color: #6c757d;
-      border-color: #6c757d;
-    }
-
-    .btn-outline-secondary:hover {
-      background: #6c757d;
-      color: white;
-    }
-
-    /* Proficiency Buttons */
-    .proficiency-btn {
-      transition: all 0.2s ease;
-    }
-
-    /* Table */
-    .table {
-      color: #eee;
-      margin-bottom: 0;
-      background-color: #1a1a1a;
-    }
-
-    .table th {
-      background: #2a2a2a;
-      color: #ff9800;
-      border-bottom: 1px solid #333;
-    }
-
-    .table td {
-      border-top: 1px solid #333;
-      vertical-align: middle;
-      background-color: #1a1a1a;
-    }
-
-    .table-hover tbody tr:hover {
-      background-color: rgba(255, 152, 0, 0.1);
-    }
-
-    /* Stats Numbers */
-    .stat-number {
-      color: #ff9800;
-      font-size: 2rem;
-    }
-
-    .stat-label {
-      color: #aaa;
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.05);
+      margin: 0 3px;
+      border-radius: 20px;
+      padding: 0.4rem 0.8rem;
       font-size: 0.9rem;
     }
+    .nav-pills .nav-link.active {
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
+      color: var(--text-dark);
+      font-weight: 600;
+    }
+    .chart-container {
+      position: relative;
+      height: 280px;
+      width: 100%;
+    }
+    .table {
+      color: var(--text-light);
+      margin-bottom: 0;
+    }
+    .table th {
+      background: var(--bg-card-header) !important; 
+      color: var(--primary-orange);
+      border-bottom: 1px solid var(--border-light) !important;
+      border-top: none !important;
+      font-weight: 600;
+    }
+    .table td {
+      border-top: 1px solid var(--border-light) !important;
+      vertical-align: middle;
+      color: var(--text-muted);
+      background-color: transparent !important; 
+    }
+    .table td strong { color: var(--text-light); }
+    .table-hover tbody tr:hover {
+      background-color: rgba(255, 152, 0, 0.1) !important; 
+      color: var(--text-light);
+    }
+    .table-hover tbody tr:hover td { color: var(--text-light); }
+    .card-body.p-0 .table-responsive {
+        border-bottom-left-radius: 16px; 
+        border-bottom-right-radius: 16px;
+        overflow: hidden; 
+    }
+    .card-body.p-0 .table {
+        margin-bottom: 0 !important;
+    }
+    .btn-view-details {
+        background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
+        color: var(--text-dark) !important;
+        border:none;
+        padding: 0.3rem 0.7rem;
+        font-size: 0.85rem;
+    }
+    .btn-view-details:hover {
+        background: linear-gradient(to right, var(--primary-orange-dark), var(--primary-orange));
+        color: var(--text-dark);
+    }
+    .dropdown-menu {
+        background-color: var(--bg-element-dark);
+        border: 1px solid var(--border-light);
+    }
+    .dropdown-item { color: var(--text-muted); }
+    .dropdown-item:hover { background-color: var(--primary-orange-dark); color: var(--text-light); }
+    .stat-number {
+      color: var(--primary-orange);
+      font-size: 2.2rem;
+      font-weight: 700;
+    }
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+    .club-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 8px;
+      border: 1px solid var(--border-light);
+    }
+    #loadingOverlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 0, 0, 0.85);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 1056;
+    }
+    .spinner-border-custom {
+        width: 3.5rem; height: 3.5rem;
+        color: var(--primary-orange);
+    }
+    .proficiency-btn-group .btn {
+        border-radius: 20px !important;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        margin: 2px;
+        border-width: 1px;
+        font-weight: 600;
+    }
+    .btn-outline-level-beginner { color: var(--color-beginner); border-color: var(--color-beginner); }
+    .btn-outline-level-beginner:hover, .btn-level-beginner { background-color: var(--color-beginner); color: var(--text-dark); border-color: var(--color-beginner);}
+    
+    .btn-outline-level-intermediate { color: var(--color-intermediate); border-color: var(--color-intermediate); }
+    .btn-outline-level-intermediate:hover, .btn-level-intermediate { background-color: var(--color-intermediate); color: var(--text-dark); border-color: var(--color-intermediate);}
+    
+    .btn-outline-level-advanced { color: var(--color-advanced); border-color: var(--color-advanced); }
+    .btn-outline-level-advanced:hover, .btn-level-advanced { background-color: var(--color-advanced); color: white; border-color: var(--color-advanced);}
 
-    /* Responsive Design */
+    .badge-test-type {
+        padding: 0.4em 0.7em;
+        font-size: 0.8rem;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+    .badge-technical { background-color: var(--primary-orange); color: var(--text-dark); } 
+    .badge-hr { background-color: #6f42c1; color: white; } 
+
+    .alert-custom-danger {
+        background-color: rgba(255, 77, 77, 0.15);
+        color: #ff6b6b;
+        border: 1px solid rgba(255, 77, 77, 0.4);
+    }
+    .alert-custom-danger .btn-close { filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(320deg); }
+
     @media (max-width: 768px) {
-      .student-info-header {
-        padding: 1rem 0;
-      }
-      
-      .card-body {
-        padding: 1rem;
-      }
-      
-      .chart-container {
-        height: 200px;
-      }
+      .student-info-header { padding: 1.5rem 0; }
+      .nav-left .logo-text {font-size: 1.5rem;}
+      .nav-right .back-btn {padding: 8px 15px; font-size: 0.9rem;}
+      .student-info-header h1 { font-size: 1.8rem; }
+      .stat-number { font-size: 1.8rem; }
+      .stat-label { font-size: 0.8rem; }
+      .chart-container { height: 220px; }
+      .card-header h3, .card-header span { font-size: 1rem; }
+      .card-body { padding: 1rem; }
+      .nav-pills .nav-link { font-size: 0.8rem; padding: 0.3rem 0.6rem; margin: 0 2px;}
     }
   </style>
 </head>
 <body>
-  <!-- Navbar -->
+  <div class="background-carousel">
+    <div class="carousel-image" style="background-image: url('assets/stocka1.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stocka6.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stock3.jpg');"></div>
+  </div>
   <nav>
     <div class="nav-left">
       <span class="logo-text">CampusConnect</span>
     </div>
     <div class="nav-right">
       <a href="student_home.html" class="back-btn">
-        <i class="bi bi-arrow-left"></i> Back to Dashboard
+        <i class="bi bi-arrow-left"></i> Dashboard
       </a>
     </div>
   </nav>
-
-  <!-- Loading Overlay -->
   <div id="loadingOverlay">
     <div class="text-center">
-      <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
-      <h4 class="mt-3">Loading Dashboard...</h4>
+      <div class="spinner-border spinner-border-custom" role="status"></div>
+      <h4 class="mt-3 text-light">Loading Dashboard...</h4>
     </div>
   </div>
-
-  <!-- Student Info Header -->
   <div class="student-info-header">
     <div class="container">
       <div class="row align-items-center">
         <div class="col-md-8">
-          <h1 class="display-5 fw-bold" id="studentName">Loading...</h1>
+          <h1 id="studentName">Loading...</h1>
           <div class="d-flex flex-wrap gap-2 mb-2">
-            <span class="badge badge-gradient" id="studentUsn">USN</span>
-            <span class="badge badge-outline-gradient" id="studentBranch">Branch</span>
+            <span class="badge badge-custom badge-gradient-orange" id="studentUsn">USN</span>
+            <span class="badge badge-custom badge-outline-orange" id="studentBranch">Branch</span>
           </div>
           <div id="clubBadges">
-            <span class="badge bg-dark">
-              <span class="spinner-border spinner-border-sm me-1"></span>
+            <span class="badge badge-custom club-badge">
+              <span class="spinner-border spinner-border-sm me-1" style="color: var(--text-muted);"></span>
               Loading clubs...
             </span>
           </div>
         </div>
-        <div class="col-md-4 text-md-end">
-          <button id="refreshBtn" class="btn btn-primary">
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+          <button id="refreshBtn" class="btn btn-refresh">
             <i class="bi bi-arrow-clockwise"></i> Refresh Data
           </button>
         </div>
       </div>
     </div>
   </div>
-
   <div class="container py-4">
-    <!-- Error Alert Container -->
     <div id="errorAlertContainer"></div>
-
-    <!-- First Row - Stats and Clubs -->
     <div class="row mb-4">
-      <!-- Test Stats -->
-      <div class="col-md-8">
-        <div class="card hover-effect h-100">
+      <div class="col-lg-8">
+        <div class="card h-100">
           <div class="card-header">
-            <h3 class="mb-0">Test Performance Overview</h3>
+            <h3 class="mb-0"><i class="bi bi-graph-up-arrow me-2"></i>Test Performance Overview</h3>
           </div>
           <div class="card-body">
-            <div class="row text-center">
-              <div class="col-md-3">
+            <div class="row text-center g-3">
+              <div class="col-md-4 col-sm-4">
                 <h6 class="stat-label">Total Tests</h6>
                 <h2 class="stat-number" id="totalTests">-</h2>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-4 col-sm-4">
                 <h6 class="stat-label">Avg Score</h6>
                 <h2 class="stat-number" id="avgScore">-</h2>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-4 col-sm-4">
                 <h6 class="stat-label">Best Score</h6>
                 <h2 class="stat-number" id="bestScore">-</h2>
-              </div>
-              <div class="col-md-3">
-                <h6 class="stat-label">Improvement</h6>
-                <h2 class="stat-number" id="improvement">-</h2>
               </div>
             </div>
           </div>
         </div>
       </div>
-      
-      <!-- Club Memberships -->
-      <div class="col-md-4">
-        <div class="card hover-effect h-100">
+      <div class="col-lg-4">
+        <div class="card h-100">
           <div class="card-header">
-            <h3 class="mb-0">Club Memberships</h3>
+            <h3 class="mb-0"><i class="bi bi-people-fill me-2"></i>Club Memberships</h3>
           </div>
-          <div class="card-body" id="clubsContainer">
-            <div class="spinner-container">
-              <div class="spinner-border text-primary"></div>
+          <div class="card-body" id="clubsContainer" style="max-height: 200px; overflow-y: auto;">
+            <div class="d-flex justify-content-center align-items-center h-100">
+              <div class="spinner-border spinner-border-custom text-secondary" role="status"></div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Second Row - Charts -->
     <div class="row mb-4">
-      <!-- Score Trend Chart -->
       <div class="col-lg-8">
-        <div class="card hover-effect h-100">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <span>Score Trend Over Time</span>
+        <div class="card h-100">
+          <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+            <span><i class="bi bi-activity me-2"></i>Score Trend Over Time</span>
             <div>
-              <ul class="nav nav-pills">
+              <ul class="nav nav-pills mt-2 mt-md-0">
                 <li class="nav-item">
                   <a class="nav-link active" href="#" data-type="all">All</a>
                 </li>
@@ -467,61 +450,53 @@
           </div>
         </div>
       </div>
-      
-      <!-- Progress Report -->
       <div class="col-lg-4">
-        <div class="card hover-effect h-100">
+        <div class="card h-100">
           <div class="card-header">
-            Proficiency Progress
+            <i class="bi bi-check-circle-fill me-2"></i>Proficiency Progress
           </div>
           <div class="card-body">
-            <div class="chart-container">
+            <div class="chart-container" style="height: 220px;">
               <canvas id="proficiencyChart"></canvas>
             </div>
-            <div class="mt-3">
-              <div class="d-flex justify-content-between flex-wrap">
-                <span class="badge bg-dark mb-1">Beginner: <span id="beginnerCount">0</span></span>
-                <span class="badge bg-info mb-1">Intermediate: <span id="intermediateCount">0</span></span>
-                <span class="badge bg-success mb-1">Advanced: <span id="advancedCount">0</span></span>
-                <span class="badge bg-secondary mb-1">Not Rated: <span id="unratedCount">0</span></span>
-              </div>
+            <div class="mt-3 text-center">
+              <span class="badge badge-custom me-1 mb-1" style="background-color: var(--color-beginner); color: var(--text-dark);">Beginner: <span id="beginnerCount">0</span></span>
+              <span class="badge badge-custom me-1 mb-1" style="background-color: var(--color-intermediate); color: var(--text-dark);">Intermediate: <span id="intermediateCount">0</span></span>
+              <span class="badge badge-custom me-1 mb-1" style="background-color: var(--color-advanced); color: white;">Advanced: <span id="advancedCount">0</span></span>
+              <span class="badge badge-custom bg-dark me-1 mb-1">Not Rated: <span id="unratedCount">0</span></span>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Third Row - Subject Proficiency -->
     <div class="row mb-4">
       <div class="col-12">
-        <div class="card hover-effect">
+        <div class="card">
           <div class="card-header">
-            <h3 class="mb-0">Subject Proficiency</h3>
-            <p class="mb-0 text-muted">Click to set or change your proficiency level</p>
+            <h3 class="mb-0"><i class="bi bi-journals me-2"></i>Subject Proficiency</h3>
+            <p class="mb-0 text-muted small">Click to set or update your proficiency level for each subject.</p>
           </div>
           <div class="card-body">
             <div id="subjectProficiencyContainer">
-              <div class="spinner-container">
-                <div class="spinner-border text-primary"></div>
+              <div class="d-flex justify-content-center align-items-center h-100">
+                <div class="spinner-border spinner-border-custom text-secondary" role="status"></div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Fourth Row - Test History -->
     <div class="row">
       <div class="col-12">
-        <div class="card hover-effect">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="mb-0">Test History</h3>
-            <div class="dropdown">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+            <h3 class="mb-0"><i class="bi bi-list-check me-2"></i>Test History</h3>
+            <div class="dropdown mt-2 mt-md-0">
               <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
-                      id="testHistoryFilter" data-bs-toggle="dropdown">
-                <i class="bi bi-filter"></i> Filter
+                      id="testHistoryFilterBtn" data-bs-toggle="dropdown" style="color:var(--text-muted); border-color: var(--border-medium);">
+                <i class="bi bi-filter"></i> Filter Tests
               </button>
-              <ul class="dropdown-menu dropdown-menu-dark">
+              <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="testHistoryFilterBtn">
                 <li><a class="dropdown-item filter-history" href="#" data-type="all">All Tests</a></li>
                 <li><a class="dropdown-item filter-history" href="#" data-type="technical">Technical Only</a></li>
                 <li><a class="dropdown-item filter-history" href="#" data-type="hr">HR Only</a></li>
@@ -537,14 +512,14 @@
                     <th>Type</th>
                     <th>Score</th>
                     <th>Correct</th>
-                    <th>Total</th>
+                    <th>Total Qs</th>
                     <th>Details</th>
                   </tr>
                 </thead>
                 <tbody id="testHistoryBody">
                   <tr>
-                    <td colspan="6" class="text-center py-4">
-                      <div class="spinner-border text-primary"></div>
+                    <td colspan="6" class="text-center py-5">
+                      <div class="spinner-border spinner-border-custom text-secondary" role="status"></div>
                     </td>
                   </tr>
                 </tbody>
@@ -555,27 +530,18 @@
       </div>
     </div>
   </div>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Your existing script remains exactly the same
-    // Global variables
     let scoreTrendChart;
     let proficiencyChart;
     let currentAnalyticsData;
     let allTestHistory = [];
 
-    // Initialize when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
       fetchStudentProfile();
-      
-      // Setup refresh button
       document.getElementById('refreshBtn').addEventListener('click', function() {
         fetchStudentProfile();
       });
-
-      // Debounced resize handler for charts
       let resizeTimer;
       window.addEventListener('resize', function() {
         clearTimeout(resizeTimer);
@@ -586,54 +552,42 @@
       });
     });
 
-    // Escape HTML to prevent XSS
     function escapeHtml(unsafe) {
       return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        ?.toString() 
+        .replace(/&/g, "&")
+        .replace(/</g, "<")
+        .replace(/>/g, ">")
+        .replace(/"/g, '"')
+        .replace(/'/g, "'") || '';
     }
 
-    // Show error message
     function showError(message) {
       const container = document.getElementById('errorAlertContainer');
       container.innerHTML = `
-        <div class="alert alert-danger alert-dismissible fade show mb-4">
+        <div class="alert alert-custom-danger alert-dismissible fade show mb-4">
           <i class="bi bi-exclamation-triangle-fill me-2"></i>
           ${escapeHtml(message)}
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       `;
     }
 
-    // Fetch student profile data
     async function fetchStudentProfile() {
       try {
-        console.log('[API] Fetching student profile');
         document.getElementById('loadingOverlay').style.display = 'flex';
-        
-        const response = await fetch('/api/student-profile', {
-          credentials: 'include'
-        });
-        
+        const response = await fetch('/api/student-profile', { credentials: 'include' });
         if (!response.ok) {
           const error = await response.json();
           throw new Error(error.error || 'Failed to fetch profile data');
         }
-        
         const data = await response.json();
-        console.log('[API] Received data:', data);
-        
         updateProfileUI(data.student, data.clubs);
         updateAnalyticsUI(data.analytics, data.subjects);
         updateSubjectProficiencyUI(data.subjects);
-        
       } catch (error) {
-        console.error('[API] Error:', error);
         if (error.message.includes('Unauthorized')) {
-          window.location.href = '/student-login';
+          window.location.href = '/student_auth.html';
         } else {
           showError(error.message || 'Failed to load profile data');
         }
@@ -642,150 +596,82 @@
       }
     }
 
-    // Update profile section
     function updateProfileUI(student, clubs) {
-      console.log('[UI] Updating profile section');
-      
-      // Update basic profile info
       document.getElementById('studentName').textContent = student?.name ? escapeHtml(student.name) : 'User';
       document.getElementById('studentUsn').textContent = student?.usn ? escapeHtml(student.usn) : 'N/A';
       document.getElementById('studentBranch').textContent = student?.branch ? escapeHtml(student.branch) : 'N/A';
-      
-      // Update club memberships
       const clubsContainer = document.getElementById('clubsContainer');
       const clubBadges = document.getElementById('clubBadges');
-      
       if (!clubs || clubs.length === 0) {
-        clubsContainer.innerHTML = `
-          <div class="empty-state">
-            <i class="bi bi-people"></i>
-            <h5>No Club Memberships</h5>
-            <p>Join clubs to see them listed here</p>
-          </div>
-        `;
-        clubBadges.innerHTML = '<span class="badge bg-secondary">No club memberships</span>';
+        clubsContainer.innerHTML = `<div class="empty-state p-2"><i class="bi bi-people"></i><p class="mb-0 small">No Club Memberships</p></div>`;
+        clubBadges.innerHTML = '<span class="badge badge-custom club-badge">No club memberships</span>';
       } else {
         clubsContainer.innerHTML = `
             <div class="list-group list-group-flush">
                 ${clubs.map(club => `
-                <div class="list-group-item border-0 bg-transparent">
+                <div class="list-group-item border-0 bg-transparent px-0 py-2">
                     <div class="d-flex align-items-center">
                     <img src="${escapeHtml(club.logo_url || 'logo.png')}" 
                         class="club-logo" alt="${escapeHtml(club.name)}">
                     <div>
-                        <h6 class="mb-0" style="color: #AAAAAA;">${escapeHtml(club.name)}</h6>
-                        <small style="color: #AAAAAA;">${escapeHtml(club.role || 'Member')}</small>
+                        <h6 class="mb-0 small" style="color: var(--text-light);">${escapeHtml(club.name)}</h6>
+                        <small style="color: var(--text-muted); font-size: 0.8em;">${escapeHtml(club.role || 'Member')}</small>
                     </div>
                     </div>
-                </div>
-                `).join('')}
-            </div>
-            `;
-        
+                </div>`).join('')}
+            </div>`;
         clubBadges.innerHTML = clubs.map(club => `
-          <span class="badge bg-dark text-light me-1 mb-1">
+          <span class="badge badge-custom club-badge me-1 mb-1">
             <img src="${escapeHtml(club.logo_url || 'logo.png')}" 
-                 width="16" height="16" class="rounded-circle me-1">
-            ${escapeHtml(club.name)} (${escapeHtml(club.role || 'Member')})
-          </span>
-        `).join('');
+                 width="16" height="16" class="rounded-circle">
+            ${escapeHtml(club.name)}
+          </span>`).join('');
       }
     }
 
-    // Update analytics section
     function updateAnalyticsUI(analytics, subjects) {
-      console.log('[UI] Updating analytics section');
       currentAnalyticsData = analytics;
-      allTestHistory = analytics.testHistory;
+      allTestHistory = analytics.testHistory || [];
+      document.getElementById('totalTests').textContent = analytics.totalTests || 0;
+      document.getElementById('avgScore').textContent = analytics.totalTests > 0 ? `${analytics.averageScore.toFixed(1)}%` : 'N/A';
+      document.getElementById('bestScore').textContent = analytics.totalTests > 0 ? `${analytics.bestScore}%` : 'N/A';
       
-      // Update stats cards
-      document.getElementById('totalTests').textContent = analytics.totalTests;
-      document.getElementById('avgScore').textContent = analytics.totalTests > 0 
-        ? `${analytics.averageScore.toFixed(1)}%` 
-        : 'N/A';
-      document.getElementById('bestScore').textContent = analytics.totalTests > 0 
-        ? `${analytics.bestScore}%` 
-        : 'N/A';
+      createScoreTrendChart(allTestHistory);
+      updateProficiencyProgressChart(subjects);
+      updateTestHistoryTable(allTestHistory);
       
-      // Calculate improvement
-      let improvement = 0;
-      if (analytics.testHistory.length >= 2) {
-        const firstScore = analytics.testHistory[analytics.testHistory.length - 1].score;
-        const lastScore = analytics.testHistory[0].score;
-        improvement = ((lastScore - firstScore) / firstScore * 100).toFixed(1);
-      }
-      document.getElementById('improvement').textContent = analytics.totalTests >= 2 
-        ? `${improvement}%` 
-        : 'N/A';
-      
-      // Create or update charts
-      createScoreTrendChart(analytics.testHistory);
-      updateProgressReport(subjects);
-      
-      // Populate test history table
-      updateTestHistoryTable(analytics.testHistory);
-      
-      // Setup chart filter buttons
-      document.querySelectorAll('[data-type]').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-          e.preventDefault();
-          const type = this.getAttribute('data-type');
-          
-          // Update active tab
-          document.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          
-          // Filter data
-          const filteredData = type === 'all' 
-            ? allTestHistory 
-            : allTestHistory.filter(t => t.test_type === type);
-          
-          updateScoreTrendChart(filteredData);
-        });
+      document.querySelectorAll('.nav-pills .nav-link').forEach(btn => {
+        btn.removeEventListener('click', handleChartFilterClick); 
+        btn.addEventListener('click', handleChartFilterClick);
       });
-
-      function updateScoreTrendChart(filteredData) {
-        // Sort the filtered data by date
-        const sortedData = [...filteredData].sort((a, b) => 
-            new Date(a.timestamp) - new Date(b.timestamp)
-        );
-
-        // Update chart data
-        scoreTrendChart.data.labels = sortedData.map(test => new Date(test.timestamp).toLocaleDateString());
-        scoreTrendChart.data.datasets[0].data = sortedData.map(test => test.score);
-        
-        // Update the chart
-        scoreTrendChart.update();
-        }
-      
-      // Setup test history filter
       document.querySelectorAll('.filter-history').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-          e.preventDefault();
-          const type = this.getAttribute('data-type');
-          const filteredData = type === 'all' 
-            ? allTestHistory 
-            : allTestHistory.filter(t => t.test_type === type);
-          updateTestHistoryTable(filteredData);
-        });
+        btn.removeEventListener('click', handleHistoryFilterClick);
+        btn.addEventListener('click', handleHistoryFilterClick);
       });
     }
+    
+    function handleChartFilterClick(e) {
+        e.preventDefault();
+        const type = this.getAttribute('data-type');
+        document.querySelectorAll('.nav-pills .nav-link').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const filteredData = type === 'all' ? allTestHistory : allTestHistory.filter(t => t.test_type === type);
+        updateScoreTrendChartData(filteredData);
+    }
 
-    // Create score trend chart
+    function handleHistoryFilterClick(e) {
+        e.preventDefault();
+        const type = this.getAttribute('data-type');
+        const filterButton = document.getElementById('testHistoryFilterBtn');
+        filterButton.innerHTML = `<i class="bi bi-filter"></i> ${this.textContent}`;
+        const filteredData = type === 'all' ? allTestHistory : allTestHistory.filter(t => t.test_type === type);
+        updateTestHistoryTable(filteredData);
+    }
+
     function createScoreTrendChart(testHistory) {
-      console.log('[UI] Creating score trend chart');
       const ctx = document.getElementById('scoreTrendChart').getContext('2d');
-      
-      // Destroy previous chart if exists
-      if (scoreTrendChart) {
-        scoreTrendChart.destroy();
-      }
-      
-      // Sort by date ascending for chart
-      const sortedHistory = [...testHistory].sort((a, b) => 
-        new Date(a.timestamp) - new Date(b.timestamp)
-      );
-      
+      if (scoreTrendChart) scoreTrendChart.destroy();
+      const sortedHistory = [...testHistory].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
       scoreTrendChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -793,92 +679,63 @@
           datasets: [{
             label: 'Test Scores',
             data: sortedHistory.map(test => test.score),
-            borderColor: '#a855f7',
-            backgroundColor: 'rgba(168, 85, 247, 0.1)',
-            tension: 0.3,
-            fill: true,
-            pointBackgroundColor: '#a855f7',
-            pointRadius: 3,
-            pointHoverRadius: 5
+            borderColor: 'var(--primary-orange)',
+            backgroundColor: 'rgba(255, 152, 0, 0.45)',
+            tension: 0.3, fill: true, 
+            pointBackgroundColor: 'var(--primary-orange)', 
+            pointBorderColor: '#fff',
+            pointBorderWidth: 1,
+            pointRadius: 4, pointHoverRadius: 7,
+            pointHoverBackgroundColor: 'var(--primary-orange-dark)',
+            pointHoverBorderColor: '#fff'
           }]
         },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          animation: {
-            duration: 1000
-          },
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const test = sortedHistory[context.dataIndex];
-                  return [
-                    `Score: ${test.score}%`,
-                    `Correct: ${test.correct_answers}/${test.attempted_questions}`,
-                    `Type: ${test.test_type}`
-                  ];
-                }
+          responsive: true, maintainAspectRatio: false, animation: { duration: 800 },
+          plugins: { 
+            legend: { display: false }, 
+            tooltip: { 
+                backgroundColor: 'rgba(0,0,0,0.8)',
+                titleColor: 'var(--primary-orange)',
+                bodyColor: 'var(--text-light)',
+                borderColor: 'var(--primary-orange-dark)',
+                borderWidth: 1,
+                callbacks: {
+                    label: function(context) {
+                      const test = sortedHistory[context.dataIndex];
+                      return [`Score: ${test.score}%`, `Correct: ${test.correct_answers}/${test.attempted_questions}`, `Type: ${test.test_type}`];
+                    }
               }
             }
           },
           scales: {
-            y: {
-              beginAtZero: false,
-              min: 0,
-              max: 100,
-              ticks: {
-                callback: function(value) {
-                  return value + '%';
-                }
-              },
-              grid: {
-                color: 'rgba(255, 255, 255, 0.1)'
-              }
-            },
-            x: {
-              grid: {
-                color: 'rgba(255, 255, 255, 0.1)'
-              }
-            }
+            y: { min: 0, max: 100, ticks: { callback: value => value + '%', color: 'var(--text-muted)' }, grid: { color: 'rgba(255, 255, 255, 0.15)' } },
+            x: { ticks: { color: 'var(--text-muted)' }, grid: { color: 'rgba(255, 255, 255, 0.15)' } }
           }
         }
       });
     }
+    
+    function updateScoreTrendChartData(filteredData) {
+        const sortedData = [...filteredData].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        scoreTrendChart.data.labels = sortedData.map(test => new Date(test.timestamp).toLocaleDateString());
+        scoreTrendChart.data.datasets[0].data = sortedData.map(test => test.score);
+        scoreTrendChart.update();
+    }
 
-    // Update progress report
-    function updateProgressReport(subjects) {
+    function updateProficiencyProgressChart(subjects) {
       if (!subjects || subjects.length === 0) return;
-
-      // Count proficiency levels
-      const counts = {
-        beginner: 0,
-        intermediate: 0,
-        advanced: 0,
-        unrated: 0
-      };
-
-      subjects.forEach(subject => {
-        if (!subject.proficiency) counts.unrated++;
-        else counts[subject.proficiency]++;
-      });
-
-      // Update counters
+      const counts = { beginner: 0, intermediate: 0, advanced: 0, unrated: 0 };
+      subjects.forEach(subject => { counts[subject.proficiency || 'unrated']++; });
+      
       document.getElementById('beginnerCount').textContent = counts.beginner;
       document.getElementById('intermediateCount').textContent = counts.intermediate;
       document.getElementById('advancedCount').textContent = counts.advanced;
       document.getElementById('unratedCount').textContent = counts.unrated;
-
-      // Update chart
-      const ctx = document.getElementById('proficiencyChart').getContext('2d');
       
-      if (proficiencyChart) {
-        proficiencyChart.destroy();
-      }
-
+      const ctx = document.getElementById('proficiencyChart').getContext('2d');
+      if (proficiencyChart) proficiencyChart.destroy();
+      
       proficiencyChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -886,213 +743,126 @@
           datasets: [{
             data: [counts.beginner, counts.intermediate, counts.advanced, counts.unrated],
             backgroundColor: [
-              '#6c757d',
-              '#0dcaf0',
-              '#198754',
-              '#555'
+              getComputedStyle(document.documentElement).getPropertyValue('--color-beginner').trim(),
+              getComputedStyle(document.documentElement).getPropertyValue('--color-intermediate').trim(),
+              getComputedStyle(document.documentElement).getPropertyValue('--color-advanced').trim(),
+              getComputedStyle(document.documentElement).getPropertyValue('--color-unrated').trim()
             ],
-            borderWidth: 1,
-            borderColor: '#1a1a1a'
+            borderColor: 'var(--bg-container)', borderWidth: 2
           }]
         },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                color: '#ddd'
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                  const value = context.raw;
-                  const percentage = Math.round((value / total) * 100);
-                  return `${context.label}: ${value} (${percentage}%)`;
+          responsive: true, maintainAspectRatio: false, cutout: '70%',
+          plugins: { 
+            legend: { display: false }, 
+            tooltip: { 
+                backgroundColor: 'rgba(0,0,0,0.8)',
+                titleColor: 'var(--primary-orange)',
+                bodyColor: 'var(--text-light)',
+                callbacks: {
+                  label: function(context) {
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                    const value = context.raw;
+                    const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                    return `${context.label}: ${value} (${percentage}%)`;
+                  }
                 }
-              }
             }
-          },
-          cutout: '70%'
+          }
         }
       });
     }
 
-    // Update test history table
     function updateTestHistoryTable(testHistory) {
-      console.log('[UI] Updating test history table');
       const tbody = document.getElementById('testHistoryBody');
-      
       if (!testHistory || testHistory.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="6" class="text-center py-4">
-              <div class="empty-state">
-                <i class="bi bi-clipboard-x"></i>
-                <h5>No Test History Found</h5>
-                <p>Take some mock tests to see them listed here</p>
-              </div>
-            </td>
-          </tr>
-        `;
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4"><div class="empty-state"><i class="bi bi-clipboard-x fs-1"></i><p class="mb-0 mt-2">No Test History Found</p></div></td></tr>`;
         return;
       }
-      
-      // Sort by date descending for table
-      const sortedHistory = [...testHistory].sort((a, b) => 
-        new Date(b.timestamp) - new Date(a.timestamp)
-      );
-      
+      const sortedHistory = [...testHistory].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
       tbody.innerHTML = sortedHistory.map(test => `
-  <tr>
-            <td style="color: #AAAAAA;">${new Date(test.timestamp).toLocaleDateString()}</td>
-            <td style="color: #AAAAAA;">
-            <span class="badge ${test.test_type === 'technical' ? 'badge-technical' : 'badge-hr'}">
-                ${escapeHtml(test.test_type)}
-            </span>
-            </td>
-            <td style="color: #AAAAAA;"><strong>${test.score}%</strong></td>
-            <td style="color: #AAAAAA;">${test.correct_answers}/${test.attempted_questions}</td>
-            <td style="color: #AAAAAA;">${test.total_questions}</td>
-            <td>
-            <button class="btn btn-sm btn-outline-primary view-test-btn" data-test-id="${test.id}">
-                <i class="bi bi-eye"></i> View
-            </button>
-            </td>
-        </tr>
-        `).join('');
-      
-      // Add event listeners to view buttons
+        <tr>
+          <td>${new Date(test.timestamp).toLocaleDateString()}</td>
+          <td><span class="badge badge-test-type ${test.test_type === 'technical' ? 'badge-technical' : 'badge-hr'}">${escapeHtml(test.test_type)}</span></td>
+          <td><strong>${test.score}%</strong></td>
+          <td>${test.correct_answers}/${test.attempted_questions}</td>
+          <td>${test.total_questions}</td>
+          <td><button class="btn btn-sm btn-view-details view-test-btn" data-test-id="${test.id}"><i class="bi bi-eye-fill"></i> View</button></td>
+        </tr>`).join('');
       document.querySelectorAll('.view-test-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const testId = this.getAttribute('data-test-id');
-          viewTestDetails(testId);
-        });
+        btn.addEventListener('click', function() { viewTestDetails(this.getAttribute('data-test-id')); });
       });
     }
 
-    // View test details
     function viewTestDetails(testId) {
       const test = allTestHistory.find(t => t.id == testId);
       if (test) {
-        alert(`Test Details:\n\n` +
-              `Type: ${test.test_type}\n` +
-              `Score: ${test.score}%\n` +
-              `Correct Answers: ${test.correct_answers}/${test.attempted_questions}\n` +
-              `Date: ${new Date(test.timestamp).toLocaleString()}`);
+        alert(`Test Details:\nType: ${test.test_type}\nScore: ${test.score}%\nCorrect: ${test.correct_answers}/${test.attempted_questions}\nDate: ${new Date(test.timestamp).toLocaleString()}`);
       }
     }
 
-    // Update subject proficiency section
     function updateSubjectProficiencyUI(subjects) {
       const container = document.getElementById('subjectProficiencyContainer');
-      
       if (!subjects || subjects.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <i class="bi bi-book"></i>
-            <h5>No Subjects Found</h5>
-            <p>No subjects available for your branch</p>
-          </div>
-        `;
+        container.innerHTML = `<div class="empty-state p-3"><i class="bi bi-book fs-1"></i><p class="mb-0 mt-2">No subjects found for proficiency rating.</p></div>`;
         return;
       }
-
       container.innerHTML = `
-        <div class="row">
+        <div class="row g-3">
           ${subjects.map(subject => `
-            <div class="col-md-6 mb-3">
-              <div class="card h-100">
-                <div class="card-body">
-                  <h5 class="card-title">${escapeHtml(subject.name)}</h5>
-                  <div class="btn-group w-100" role="group">
-                    <button type="button" 
-                      class="btn ${subject.proficiency === 'beginner' ? 'btn-dark' : 'btn-outline-dark'} proficiency-btn"
-                      data-subject-id="${subject.id}" data-level="beginner">
-                      Beginner
-                    </button>
-                    <button type="button" 
-                      class="btn ${subject.proficiency === 'intermediate' ? 'btn-info' : 'btn-outline-info'} proficiency-btn"
-                      data-subject-id="${subject.id}" data-level="intermediate">
-                      Intermediate
-                    </button>
-                    <button type="button" 
-                      class="btn ${subject.proficiency === 'advanced' ? 'btn-success' : 'btn-outline-success'} proficiency-btn"
-                      data-subject-id="${subject.id}" data-level="advanced">
-                      Advanced
-                    </button>
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100 shadow-sm proficiency-card">
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title mb-3" style="color:var(--text-light); font-size: 1rem;">${escapeHtml(subject.name)}</h5>
+                  <div class="btn-group w-100 proficiency-btn-group mt-auto" role="group">
+                    ${['beginner', 'intermediate', 'advanced'].map(level => `
+                      <button type="button" 
+                        class="btn proficiency-btn ${subject.proficiency === level ? `btn-level-${level}` : `btn-outline-level-${level}`}"
+                        data-subject-id="${subject.id}" data-level="${level}">
+                        ${level.charAt(0).toUpperCase() + level.slice(1)}
+                      </button>`).join('')}
                   </div>
                 </div>
               </div>
-            </div>
-          `).join('')}
-        </div>
-      `;
-
-      // Add event listeners to proficiency buttons
+            </div>`).join('')}
+        </div>`;
       document.querySelectorAll('.proficiency-btn').forEach(btn => {
         btn.addEventListener('click', async function() {
             const subjectId = this.dataset.subjectId;
             const level = this.dataset.level;
-            const isCurrentlySelected = this.classList.contains('btn-dark') || 
-                                    this.classList.contains('btn-info') || 
-                                    this.classList.contains('btn-success');
-            
-            // Determine the new proficiency level (null if deselecting)
-            const newProficiency = isCurrentlySelected ? null : level;
+            const currentSubject = subjects.find(s => s.id == subjectId);
+            const currentProficiency = currentSubject?.proficiency;
+            const newProficiency = currentProficiency === level ? null : level;
 
+            const groupButtons = this.closest('.btn-group').querySelectorAll('.proficiency-btn');
+            groupButtons.forEach(b => {
+                b.classList.remove(`btn-level-${b.dataset.level}`);
+                b.classList.add(`btn-outline-level-${b.dataset.level}`);
+            });
+            if (newProficiency) {
+                this.classList.remove(`btn-outline-level-${level}`);
+                this.classList.add(`btn-level-${level}`);
+            }
             try {
-            // Optimistic UI update
-            const buttons = document.querySelectorAll(`[data-subject-id="${subjectId}"]`);
-            buttons.forEach(btn => {
-                const btnLevel = btn.dataset.level;
-                btn.classList.remove('btn-dark', 'btn-info', 'btn-success');
-                btn.classList.add(`btn-outline-${getLevelColor(btnLevel)}`);
-                
-                // If this is the clicked button and we're selecting (not deselecting)
-                if (btn === this && !isCurrentlySelected) {
-                btn.classList.remove(`btn-outline-${getLevelColor(btnLevel)}`);
-                btn.classList.add(`btn-${getLevelColor(btnLevel)}`);
+                const response = await fetch('/api/update-proficiency', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ subject_id: subjectId, proficiency: newProficiency })
+                });
+                if (!response.ok) {
+                    const error = await response.json(); throw new Error(error.error || 'Update failed');
                 }
-            });
-
-            // Send update to server
-            const response = await fetch('/api/update-proficiency', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                subject_id: subjectId, 
-                proficiency: newProficiency 
-                })
-            });
-
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Update failed');
-            }
-            
-            // Refresh the data to ensure consistency
-            fetchStudentProfile();
-            
+                const updatedSubjectData = await response.json();
+                const subjectIndex = subjects.findIndex(s => s.id == subjectId);
+                if (subjectIndex > -1) subjects[subjectIndex].proficiency = updatedSubjectData.proficiency;
+                updateProficiencyProgressChart(subjects); 
             } catch (error) {
-            console.error('Error updating proficiency:', error);
-            // Revert UI by refreshing from server
-            fetchStudentProfile();
+                console.error('Error updating proficiency:', error);
+                showError('Failed to update proficiency: ' + error.message);
+                fetchStudentProfile(); 
             }
         });
-        });
-    }
-
-    function getLevelColor(level) {
-      switch(level) {
-        case 'beginner': return 'dark';
-        case 'intermediate': return 'info';
-        case 'advanced': return 'success';
-        default: return 'secondary';
-      }
+      });
     }
   </script>
 </body>

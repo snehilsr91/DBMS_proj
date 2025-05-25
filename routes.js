@@ -15,35 +15,149 @@ router.get('/admin-login', (req, res) => res.sendFile(path.join(__dirname, 'publ
 router.get('/student-register', (req, res) => res.sendFile(path.join(__dirname, 'public/student_auth.html')));
 router.get('/club-register', (req, res) => res.sendFile(path.join(__dirname, 'public/club_auth.html')));
 
-// Login Routes
 router.post('/student-login', (req, res) => {
     const { usn, dob } = req.body;
+    if (!usn || !dob) {
+        return res.redirect('/student_auth.html?loginError=USN and Date of Birth are required.#login');
+    }
+
     db.query('SELECT * FROM students WHERE usn = ? AND dob = ?', [usn, dob], (err, results) => {
-        if (err || results.length === 0) return res.send('Invalid credentials');
+        if (err) {
+            console.error("Database error during login:", err);
+            return res.redirect('/student_auth.html?loginError=An internal server error occurred. Please try again later.#login');
+        }
+        if (results.length === 0) {
+            return res.redirect('/student_auth.html?loginError=Invalid USN or Date of Birth.&form=login#login');
+        }
         req.session.user = { ...results[0], type: 'student' };
         res.redirect('/student-home');
     });
 });
 
+router.post('/student-register', (req, res) => {
+    const { name, usn, branch, dob } = req.body;
+
+    if (!name || !usn || !branch || !dob) {
+        return res.redirect('/student_auth.html?registerError=All fields are required.&form=register#register');
+    }
+
+    db.query('SELECT usn FROM students WHERE usn = ?', [usn], (err, studentResults) => {
+        if (err) {
+            console.error("Database error during USN check in students table:", err);
+            return res.redirect('/student_auth.html?registerError=Server error checking USN. Please try again.&form=register#register');
+        }
+
+        if (studentResults.length > 0) {
+            return res.redirect('/student_auth.html?registerError=This USN is already registered. Please login or contact admin if you forgot your details.&form=register#register');
+        }
+        db.query('INSERT INTO student_requests (name, usn, branch, dob) VALUES (?, ?, ?, ?)', [name, usn, branch, dob], (insertErr) => {
+            if (insertErr) {
+                console.error("Database error during registration request insertion:", insertErr);
+                if (insertErr.code === 'ER_DUP_ENTRY') {
+                     return res.redirect('/student_auth.html?registerError=A registration request with this USN already exists or is being processed.&form=register#register');
+                }
+                return res.redirect('/student_auth.html?registerError=Registration failed due to a server error. Please try again.&form=register#register');
+            }
+
+            res.redirect('/student_auth.html?loginMessage=Registration request submitted successfully! You will be notified once approved by an admin.&form=login#login');
+        });
+    });
+});
+
 router.post('/club-login', (req, res) => {
     const { club_id, password } = req.body;
-    db.query('SELECT * FROM clubs WHERE club_id = ?', [club_id], (err, result) => {
-        if (err || result.length === 0) return res.send('Invalid login');
-        bcrypt.compare(password, result[0].password, (err, match) => {
-            if (!match) return res.send('Invalid password');
-            req.session.club = result[0];
+
+    if (!club_id || !password) {
+        return res.redirect('/club_auth.html?loginError=Club ID and Password are required.&form=login#login');
+    }
+
+    db.query('SELECT * FROM clubs WHERE club_id = ?', [club_id], (err, results) => {
+        if (err) {
+            console.error("Database error during club login:", err);
+            return res.redirect('/club_auth.html?loginError=Server error. Please try again.&form=login#login');
+        }
+        if (results.length === 0) {
+            return res.redirect('/club_auth.html?loginError=Invalid Club ID or club not yet approved.&form=login#login');
+        }
+
+        const club = results[0];
+        bcrypt.compare(password, club.password, (bcryptErr, match) => {
+            if (bcryptErr) {
+                console.error("Bcrypt error during club login:", bcryptErr);
+                return res.redirect('/club_auth.html?loginError=Authentication error. Please try again.&form=login#login');
+            }
+            if (!match) {
+                return res.redirect('/club_auth.html?loginError=Incorrect password.&form=login#login');
+            }
+            req.session.club = club;
             res.redirect('/club-home');
+        });
+    });
+});
+
+router.post('/club-register', (req, res) => {
+    const { name, club_id, password } = req.body;
+
+    if (!name || !club_id || !password) {
+        return res.redirect('/club_auth.html?registerError=All fields are required.&form=register#register');
+    }
+    if (password.length < 6) {
+        return res.redirect('/club_auth.html?registerError=Password must be at least 6 characters long.&form=register#register');
+    }
+    db.query('SELECT club_id FROM clubs WHERE club_id = ?', [club_id], (err, activeClubResults) => {
+        if (err) {
+            console.error("DB error checking 'clubs' table:", err);
+            return res.redirect('/club_auth.html?registerError=Server error during validation. Please try again.&form=register#register');
+        }
+        if (activeClubResults.length > 0) {
+            return res.redirect('/club_auth.html?registerError=This Club ID is already registered and active. Please login or contact an admin.&form=register#register');
+        }
+        bcrypt.hash(password, 10, (hashErr, hashedPassword) => {
+            if (hashErr) {
+                console.error("Bcrypt hashing error for club registration:", hashErr);
+                return res.redirect('/club_auth.html?registerError=Error processing registration. Please try again.&form=register#register');
+            }
+            db.query('INSERT INTO club_requests (name, club_id, password) VALUES (?, ?, ?)', 
+                     [name, club_id, hashedPassword], (insertErr) => {
+                if (insertErr) {
+                    console.error("DB error inserting club request:", insertErr);
+                    if (insertErr.code === 'ER_DUP_ENTRY') {
+                        return res.redirect('/club_auth.html?registerError=A registration request for this Club ID already exists or is being processed.&form=register#register');
+                    }
+                    return res.redirect('/club_auth.html?registerError=Registration failed due to a server error. Please try again.&form=register#register');
+                }
+                res.redirect('/club_auth.html?loginMessage=Club registration request submitted! You will be notified by an admin upon approval.&form=login#login');
+            });
         });
     });
 });
 
 router.post('/admin-login', (req, res) => {
     const { username, password } = req.body;
-    db.query('SELECT * FROM admin WHERE username = ?', [username], (err, result) => {
-        if (err || result.length === 0) return res.send('Invalid login');
-        bcrypt.compare(password, result[0].password, (err, match) => {
-            if (!match) return res.send('Invalid password');
-            req.session.admin = result[0];
+
+    if (!username || !password) {
+        return res.redirect('/admin_login.html?loginError=Username and Password are required.');
+    }
+
+    db.query('SELECT * FROM admin WHERE username = ?', [username], (err, results) => {
+        if (err) {
+            console.error("Database error during admin login:", err);
+            return res.redirect('/admin_login.html?loginError=Server error. Please try again.');
+        }
+        if (results.length === 0) {
+            return res.redirect('/admin_login.html?loginError=Invalid username or password.');
+        }
+
+        const adminUser = results[0];
+        bcrypt.compare(password, adminUser.password, (bcryptErr, match) => {
+            if (bcryptErr) {
+                console.error("Bcrypt error during admin login:", bcryptErr);
+                return res.redirect('/admin_login.html?loginError=Authentication error. Please try again.');
+            }
+            if (!match) {
+                return res.redirect('/admin_login.html?loginError=Invalid username or password.');
+            }
+            req.session.admin = adminUser;
             res.redirect('/admin-home');
         });
     });
@@ -72,24 +186,6 @@ router.get('/admin-home', (req, res) => {
     } else {
         res.redirect('/');
     }
-});
-
-// Registrations
-router.post('/student-register', (req, res) => {
-    const { name, usn, branch, dob } = req.body;
-    db.query('INSERT INTO student_requests (name, usn, branch, dob) VALUES (?, ?, ?, ?)', [name, usn, branch, dob], () => {
-        res.redirect('/student-login');
-    });
-});
-
-router.post('/club-register', (req, res) => {
-    const { name, club_id, password } = req.body;
-    bcrypt.hash(password, 10, (err, hashedPassword) => {
-        if (err) return res.send('Error');
-        db.query('INSERT INTO club_requests (name, club_id, password) VALUES (?, ?, ?)', [name, club_id, hashedPassword], () => {
-            res.redirect('/club-login');
-        });
-    });
 });
 
 // Admin approval system

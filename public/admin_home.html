@@ -4,433 +4,446 @@
   <meta charset="UTF-8">
   <title>Admin Dashboard | CampusConnect</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    :root {
+      --primary-orange: #ff9800;
+      --primary-orange-dark: #ff6600;
+      --text-light: #f0f0f0;
+      --text-dark: #121212;
+      --text-muted: #ccc;
+      --bg-navbar: rgba(15, 15, 15, 0.95);
+      --bg-container: rgba(15, 15, 15, 0.9);
+      --bg-table-header: rgba(25, 25, 30, 0.85); 
+      --bg-table-row: rgba(20, 20, 25, 0.8);   
+      --border-light: rgba(255, 255, 255, 0.1);
+      --color-danger: #ff4d4d;
+      --color-danger-dark: #ff1a1a;
+      --shadow-strong: rgba(0, 0, 0, 0.5);
+      --shadow-brand: rgba(255, 152, 0, 0.3);
+    }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom right, #0f0f0f, #1f1f1f);
-      color: #ffffff;
+      color: var(--text-light);
       min-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
     }
-
-    /* Enhanced Navbar */
+    .background-carousel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: -2;
+      overflow: hidden;
+    }
+    .background-carousel .carousel-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      animation: fadeImage 18s infinite;
+    }
+    .background-carousel .carousel-image:nth-child(1) { animation-delay: 0s; }
+    .background-carousel .carousel-image:nth-child(2) { animation-delay: 6s; }
+    .background-carousel .carousel-image:nth-child(3) { animation-delay: 12s; }
+    @keyframes fadeImage {
+      0%   { opacity: 0; }
+      15%  { opacity: 1; }
+      85%  { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      z-index: -1;
+    }
     nav {
       width: 100%;
       padding: 16px 5%;
-      background: rgba(15, 15, 15, 0.95);
+      background: var(--bg-navbar);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 20px var(--shadow-strong);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
       border-bottom: 1px solid #ff660050;
     }
-
-    .nav-left {
+    .nav-left .logo-text {
       font-size: 1.8rem;
-      font-weight: 700;
-      color: #ff9800;
-      background: linear-gradient(to right, #ff9800, #ff6600);
+      font-weight: 600;
+      color: var(--primary-orange);
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-    }
-
+    .nav-right { display: flex; align-items: center; }
     .logout-btn {
       color: #fff;
       text-decoration: none;
       font-weight: 600;
       padding: 10px 20px;
       border-radius: 50px;
-      background: linear-gradient(to right, #ff4d4d, #ff7a18);
+      background: linear-gradient(to right, var(--color-danger), #ff7a18); 
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-
     .logout-btn:hover {
-      background: linear-gradient(to right, #ff1a1a, #ff6600);
+      background: linear-gradient(to right, var(--color-danger-dark), var(--color-danger));
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+      box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
     }
-
-    /* Main Content */
     .container {
-      max-width: 1200px;
+      max-width: 1300px; 
       margin: 40px auto;
-      background: #1a1a1a;
-      border-radius: 16px;
-      padding: 40px;
-      box-shadow: 0 0 20px rgba(255, 115, 0, 0.15);
-      border: 1px solid #333;
+      background: var(--bg-container);
+      backdrop-filter: blur(5px);
+      border-radius: 20px;
+      padding: 35px 40px;
+      box-shadow: 0 8px 30px var(--shadow-strong);
+      border: 1px solid var(--border-light);
+      width: calc(100% - 40px); 
     }
-
     h1, h2 {
       text-align: center;
-      color: #ff6600;
+      color: var(--primary-orange);
       margin-bottom: 30px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
-
     h1 {
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       margin-bottom: 40px;
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-
     h2 {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       margin-top: 50px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #333;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #ff980030;
     }
-
-    /* Tables */
+    .table-responsive-container {
+        overflow-x: auto;
+        border-radius: 12px; 
+        border: 1px solid var(--border-light);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        margin-bottom: 50px;
+    }
     table {
       width: 100%;
+      min-width: 700px; 
       border-collapse: collapse;
-      margin-bottom: 50px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      background-color: transparent;
     }
-
     th, td {
-      padding: 16px 20px;
+      padding: 14px 18px;
       text-align: left;
-      border: 1px solid #333;
+      border-bottom: 1px solid var(--border-light);
     }
-
     th {
-      background-color: #2a2a2a;
-      color: #ff9800;
+      background-color: var(--bg-table-header);
+      color: var(--primary-orange);
       font-weight: 600;
       text-transform: uppercase;
       font-size: 0.9rem;
       letter-spacing: 0.5px;
     }
-
     td {
-      background-color: #2a2a2a;
-      color: #f0f0f0;
+      background-color: var(--bg-table-row);
+      color: var(--text-muted);
       vertical-align: middle;
     }
-
-    tr:hover td {
-      background-color: #333;
+    tr:last-child td {
+        border-bottom: none;
     }
-
-    /* Buttons */
+    tr:hover td {
+      background-color: rgba(255,152,0,0.1);
+      color: var(--text-light);
+    }
     .action-buttons {
       display: flex;
       gap: 10px;
+      flex-wrap: nowrap; 
     }
-
-    .approve-btn, .reject-btn {
+    .action-btn {
       border-radius: 8px;
       border: none;
-      padding: 10px 18px;
+      padding: 8px 15px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      font-size: 0.9rem;
+      white-space: nowrap;
     }
-
     .approve-btn {
-      background: linear-gradient(to right, #7c3aed, #a855f7);
-      color: white;
+      background: linear-gradient(to right, var(--primary-orange), var(--primary-orange-dark));
+      color: var(--text-dark);
     }
-
     .approve-btn:hover {
-      background: linear-gradient(to right, #a855f7, #7c3aed);
+      background: linear-gradient(to right, var(--primary-orange-dark), var(--primary-orange));
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+      box-shadow: 0 4px 10px var(--shadow-brand);
     }
-
     .reject-btn {
-      background: linear-gradient(to right, #ff4d4d, #ff7a18);
+      background: linear-gradient(to right, var(--color-danger), var(--color-danger-dark));
       color: white;
     }
-
     .reject-btn:hover {
-      background: linear-gradient(to right, #ff1a1a, #ff6600);
+      background: linear-gradient(to right, var(--color-danger-dark), var(--color-danger));
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+      box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3);
     }
-
-    /* Resource Link */
     .resource-link {
-      color: #f97316;
+      color: var(--primary-orange-dark);
       text-decoration: none;
+      font-weight: 500;
       transition: color 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
-
     .resource-link:hover {
-      color: #ff9800;
+      color: var(--primary-orange);
       text-decoration: underline;
     }
-
-    /* Empty State */
     .empty-state {
       text-align: center;
       padding: 30px;
-      color: #aaa;
+      color: var(--text-muted);
       font-style: italic;
+      background-color: var(--bg-table-row);
     }
-
-    /* Responsive */
     @media (max-width: 1024px) {
-      .container {
-        margin: 30px;
-        padding: 30px;
-      }
+      .container { margin: 30px 20px; padding: 30px 25px; }
     }
-
     @media (max-width: 768px) {
-      nav {
-        padding: 12px 5%;
-      }
-      
-      .container {
-        margin: 20px;
-        padding: 20px;
-      }
-      
-      h1 {
-        font-size: 1.8rem;
-      }
-      
-      h2 {
-        font-size: 1.4rem;
-      }
-      
-      th, td {
-        padding: 12px 15px;
-        font-size: 0.9rem;
-      }
-      
-      .approve-btn, .reject-btn {
-        padding: 8px 12px;
-        font-size: 0.8rem;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .action-buttons {
-        flex-direction: column;
-        gap: 8px;
-      }
+      nav { padding: 12px 3%; }
+      .nav-left .logo-text { font-size: 1.6rem; }
+      .logout-btn { padding: 8px 15px; font-size: 0.9rem; }
+      .container { margin: 20px 15px; padding: 25px 20px; }
+      h1 { font-size: 2rem; margin-bottom: 30px; }
+      h2 { font-size: 1.5rem; margin-top: 40px; }
+      th, td { padding: 10px 12px; font-size: 0.85rem; }
+      .action-btn { padding: 6px 10px; font-size: 0.8rem; }
     }
   </style>
 </head>
 <body>
-  <!-- Top Navigation Bar -->
+  <div class="background-carousel">
+    <div class="carousel-image" style="background-image: url('assets/stocka1.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stock5.jpg');"></div>
+    <div class="carousel-image" style="background-image: url('assets/stock3.jpg');"></div>
+  </div>
   <nav>
-    <div class="nav-left">CampusConnect</div>
+    <div class="nav-left"><span class="logo-text">CampusConnect</span></div>
     <div class="nav-right">
       <a href="index.html" class="logout-btn">
-        <i class="fas fa-sign-out-alt"></i>
-        Logout
+        <i class="fas fa-sign-out-alt"></i> Logout
       </a>
     </div>
   </nav>
-
-  <!-- Main Content -->
   <div class="container">
-    <h1><i class="fas fa-user-shield"></i> Welcome, Admin</h1>
-
+    <h1><i class="fas fa-user-shield"></i> Admin Dashboard</h1>
     <h2><i class="fas fa-user-graduate"></i> Pending Student Registrations</h2>
-    <table id="student-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>USN</th>
-          <th>Branch</th>
-          <th>DOB</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Data will be loaded here -->
-      </tbody>
-    </table>
-
-    <h2><i class="fas fa-users"></i> Pending Club Registrations</h2>
-    <table id="club-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Club ID</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Data will be loaded here -->
-      </tbody>
-    </table>
-
-    <h2><i class="fas fa-book"></i> Pending Resource Suggestions</h2>
-    <table id="resource-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Title</th>
-          <th>Type</th>
-          <th>Link</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Data will be loaded here -->
-      </tbody>
-    </table>
+    <div class="table-responsive-container">
+        <table id="student-table">
+        <thead>
+            <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>USN</th>
+            <th>Branch</th>
+            <th>DOB</th>
+            <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        </table>
+    </div>
+    <h2><i class="fas fa-users-cog"></i> Pending Club Registrations</h2>
+    <div class="table-responsive-container">
+        <table id="club-table">
+        <thead>
+            <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Club ID</th>
+            <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        </table>
+    </div>
+    <h2><i class="fas fa-book-reader"></i> Pending Resource Suggestions</h2>
+    <div class="table-responsive-container">
+        <table id="resource-table">
+        <thead>
+            <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Link</th>
+            <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        </table>
+    </div>
   </div>
-
-  <!-- Load data from backend -->
   <script>
     async function loadData() {
       try {
         const res = await fetch('/admin-home-data');
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({ error: 'Failed to fetch admin data and parse error' }));
+            throw new Error(errorData.error || `HTTP error! status: ${res.status}`);
+        }
         const data = await res.json();
 
-        const studentTable = document.querySelector('#student-table tbody');
-        const clubTable = document.querySelector('#club-table tbody');
-        const resourceTable = document.querySelector('#resource-table tbody');
+        const studentTableBody = document.querySelector('#student-table tbody');
+        const clubTableBody = document.querySelector('#club-table tbody');
+        const resourceTableBody = document.querySelector('#resource-table tbody');
 
-        // Clear existing content
-        studentTable.innerHTML = '';
-        clubTable.innerHTML = '';
-        resourceTable.innerHTML = '';
+        studentTableBody.innerHTML = '';
+        clubTableBody.innerHTML = '';
+        resourceTableBody.innerHTML = '';
 
-        // Add empty state if no data
         if (data.students.length === 0) {
-          studentTable.innerHTML = '<tr><td colspan="6" class="empty-state">No pending student registrations</td></tr>';
+          studentTableBody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending student registrations.</td></tr>';
+        } else {
+            data.students.forEach(s => {
+            const dobFormatted = new Date(s.dob).toLocaleDateString('en-IN', {
+                day: '2-digit', month: 'short', year: 'numeric'
+            });
+            studentTableBody.innerHTML += `
+                <tr>
+                <td>${s.id}</td>
+                <td>${s.name}</td>
+                <td>${s.usn}</td>
+                <td>${s.branch}</td>
+                <td>${dobFormatted}</td>
+                <td>
+                    <div class="action-buttons">
+                    <form method="POST" action="/approve-student" style="display:inline;">
+                        <input type="hidden" name="id" value="${s.id}" />
+                        <button type="submit" class="action-btn approve-btn">
+                        <i class="fas fa-check"></i> Approve
+                        </button>
+                    </form>
+                    <form method="POST" action="/reject-student" style="display:inline;">
+                        <input type="hidden" name="id" value="${s.id}" />
+                        <button type="submit" class="action-btn reject-btn">
+                        <i class="fas fa-times"></i> Reject
+                        </button>
+                    </form>
+                    </div>
+                </td>
+                </tr>
+            `;
+            });
         }
+
         if (data.clubs.length === 0) {
-          clubTable.innerHTML = '<tr><td colspan="4" class="empty-state">No pending club registrations</td></tr>';
+          clubTableBody.innerHTML = '<tr><td colspan="4" class="empty-state">No pending club registrations.</td></tr>';
+        } else {
+            data.clubs.forEach(c => {
+            clubTableBody.innerHTML += `
+                <tr>
+                <td>${c.id}</td>
+                <td>${c.name}</td>
+                <td>${c.club_id}</td>
+                <td>
+                    <div class="action-buttons">
+                    <form method="POST" action="/approve-club" style="display:inline;">
+                        <input type="hidden" name="id" value="${c.id}" />
+                        <button type="submit" class="action-btn approve-btn">
+                        <i class="fas fa-check"></i> Approve
+                        </button>
+                    </form>
+                    <form method="POST" action="/reject-club" style="display:inline;">
+                        <input type="hidden" name="id" value="${c.id}" />
+                        <button type="submit" class="action-btn reject-btn">
+                        <i class="fas fa-times"></i> Reject
+                        </button>
+                    </form>
+                    </div>
+                </td>
+                </tr>
+            `;
+            });
         }
+
         if (data.resources.length === 0) {
-          resourceTable.innerHTML = '<tr><td colspan="5" class="empty-state">No pending resource suggestions</td></tr>';
+          resourceTableBody.innerHTML = '<tr><td colspan="5" class="empty-state">No pending resource suggestions.</td></tr>';
+        } else {
+            data.resources.forEach(r => {
+            resourceTableBody.innerHTML += `
+                <tr>
+                <td>${r.id}</td>
+                <td>${r.title}</td>
+                <td>${r.type}</td>
+                <td><a href="${r.link.startsWith('http') ? r.link : '//'+r.link}" target="_blank" rel="noopener noreferrer" class="resource-link"><i class="fas fa-external-link-alt"></i> Visit Resource</a></td>
+                <td>
+                    <div class="action-buttons">
+                    <form method="POST" action="/approve-resource" style="display:inline;">
+                        <input type="hidden" name="id" value="${r.id}" />
+                        <button type="submit" class="action-btn approve-btn">
+                        <i class="fas fa-check"></i> Approve
+                        </button>
+                    </form>
+                    <form method="POST" action="/reject-resource" style="display:inline;">
+                        <input type="hidden" name="id" value="${r.id}" />
+                        <button type="submit" class="action-btn reject-btn">
+                        <i class="fas fa-times"></i> Reject
+                        </button>
+                    </form>
+                    </div>
+                </td>
+                </tr>
+            `;
+            });
         }
-
-        // Populate student data
-        data.students.forEach(s => {
-          const dobFormatted = new Date(s.dob).toLocaleDateString('en-IN', {
-            day: 'numeric', month: 'long', year: 'numeric'
-          });
-          studentTable.innerHTML += `
-            <tr>
-              <td>${s.id}</td>
-              <td>${s.name}</td>
-              <td>${s.usn}</td>
-              <td>${s.branch}</td>
-              <td>${dobFormatted}</td>
-              <td>
-                <div class="action-buttons">
-                  <form method="POST" action="/approve-student">
-                    <input type="hidden" name="id" value="${s.id}" />
-                    <button type="submit" class="approve-btn">
-                      <i class="fas fa-check"></i> Approve
-                    </button>
-                  </form>
-                  <form method="POST" action="/reject-student">
-                    <input type="hidden" name="id" value="${s.id}" />
-                    <button type="submit" class="reject-btn">
-                      <i class="fas fa-times"></i> Reject
-                    </button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-          `;
-        });
-
-        // Populate club data
-        data.clubs.forEach(c => {
-          clubTable.innerHTML += `
-            <tr>
-              <td>${c.id}</td>
-              <td>${c.name}</td>
-              <td>${c.club_id}</td>
-              <td>
-                <div class="action-buttons">
-                  <form method="POST" action="/approve-club">
-                    <input type="hidden" name="id" value="${c.id}" />
-                    <button type="submit" class="approve-btn">
-                      <i class="fas fa-check"></i> Approve
-                    </button>
-                  </form>
-                  <form method="POST" action="/reject-club">
-                    <input type="hidden" name="id" value="${c.id}" />
-                    <button type="submit" class="reject-btn">
-                      <i class="fas fa-times"></i> Reject
-                    </button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-          `;
-        });
-
-        // Populate resource data
-        data.resources.forEach(r => {
-          resourceTable.innerHTML += `
-            <tr>
-              <td>${r.id}</td>
-              <td>${r.title}</td>
-              <td>${r.type}</td>
-              <td><a href="${r.link}" target="_blank" class="resource-link">View Resource</a></td>
-              <td>
-                <div class="action-buttons">
-                  <form method="POST" action="/approve-resource">
-                    <input type="hidden" name="id" value="${r.id}" />
-                    <button type="submit" class="approve-btn">
-                      <i class="fas fa-check"></i> Approve
-                    </button>
-                  </form>
-                  <form method="POST" action="/reject-resource">
-                    <input type="hidden" name="id" value="${r.id}" />
-                    <button type="submit" class="reject-btn">
-                      <i class="fas fa-times"></i> Reject
-                    </button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-          `;
-        });
-
       } catch (error) {
-        console.error('Error loading data:', error);
-        // Show error messages in each table
-        document.querySelector('#student-table tbody').innerHTML = `
-          <tr><td colspan="6" class="empty-state">Error loading student data</td></tr>
-        `;
-        document.querySelector('#club-table tbody').innerHTML = `
-          <tr><td colspan="4" class="empty-state">Error loading club data</td></tr>
-        `;
-        document.querySelector('#resource-table tbody').innerHTML = `
-          <tr><td colspan="5" class="empty-state">Error loading resource data</td></tr>
-        `;
+        console.error('Error loading admin data:', error);
+        document.querySelector('#student-table tbody').innerHTML = `<tr><td colspan="6" class="empty-state" style="color:var(--color-danger);">Error loading student data: ${error.message}</td></tr>`;
+        document.querySelector('#club-table tbody').innerHTML = `<tr><td colspan="4" class="empty-state" style="color:var(--color-danger);">Error loading club data: ${error.message}</td></tr>`;
+        document.querySelector('#resource-table tbody').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:var(--color-danger);">Error loading resource data: ${error.message}</td></tr>`;
       }
     }
-
-    // Load data when page loads
     document.addEventListener('DOMContentLoaded', loadData);
   </script>
 </body>
